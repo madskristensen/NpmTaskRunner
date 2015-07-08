@@ -13,7 +13,22 @@ or get the
 ### NPM scripts
 
 Inside package.json it is possible to add custom scripts inside
-the "scripts" element. When doing that, the Task Runner Explorer
+the "scripts" element.
+
+```js
+{
+	"name": "test",
+	"version": "1.0.0",
+	"scripts": {
+		"watch-test": "mocha --watch --reporter spec test",
+		"build-js": "browserify -t reactify app/js/main.js | uglifyjs -mc > static/bundle.js"
+	}
+}
+```
+
+### Execute scripts
+
+When scripts are specified, the Task Runner Explorer
 will show those scripts.
 
 ![Task list](art/task-list.png)
