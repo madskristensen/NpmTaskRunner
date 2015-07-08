@@ -6,7 +6,7 @@ Task Runner Explorer.
 [![Build status](https://ci.appveyor.com/api/projects/status/2cohf1g6n0ii7imq?svg=true)](https://ci.appveyor.com/project/madskristensen/npmtaskrunner)
 
 Download the extension at the
-[VS Gallery](https://visualstudiogallery.msdn.microsoft.com/9ec27da7-e24b-4d56-8064-fd7e88ac1c40)
+[VS Gallery](https://visualstudiogallery.msdn.microsoft.com/8f2f2cbc-4da5-43ba-9de2-c9d08ade4941)
 or get the
 [nightly build](http://vsixgallery.com/extension/d7f89ba3-815c-4feb-89b9-68d1654e2138/)
 
