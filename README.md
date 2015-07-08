@@ -3,7 +3,7 @@
 Adds support for package.json's NPM scripts in Visual Studio 2015's
 Task Runner Explorer.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ktn1qy982qsprwb5?svg=true)](https://ci.appveyor.com/project/madskristensen/bundlerminifier)
+[![Build status](https://ci.appveyor.com/api/projects/status/2cohf1g6n0ii7imq?svg=true)](https://ci.appveyor.com/project/madskristensen/npmtaskrunner)
 
 Download the extension at the
 [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/9ec27da7-e24b-4d56-8064-fd7e88ac1c40)
