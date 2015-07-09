@@ -15,7 +15,7 @@ namespace NpmTaskRunner
         {
             rangeInLine = new LineRange { Start = 0, Length = line.Length };
 
-            if (string.IsNullOrEmpty(line) || line.Length < 20)
+            if (string.IsNullOrEmpty(line) || line.Length < 20 || !line.Contains("-vs-bindings"))
                 return false;
 
             try

@@ -53,7 +53,7 @@ namespace NpmTaskRunner
             tasks.Description = "Scripts specified in the \"scripts\" JSON element.";
             root.Children.Add(tasks);
 
-            foreach (var key in scripts.Keys)
+            foreach (var key in scripts.Keys.OrderBy(k => k))
             {
                 TaskRunnerNode task = new TaskRunnerNode(key, true)
                 {
