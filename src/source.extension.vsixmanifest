@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="d7f89ba3-815c-4feb-89b9-68d1654e2138" Version="0.5" Language="en-US" Publisher="Mads Kristensen" />
-    <DisplayName>NPM Scripts Task Runner</DisplayName>
-    <Description xml:space="preserve">Adds support for package.json's NPM scripts in the Task Runner Explorer</Description>
+    <Identity Id="e4f68b58-9df0-4878-8e7f-cba51b236f94" Version="0.5" Language="en-US" Publisher="Mads Kristensen" />
+    <DisplayName>Broccoli Task Runner</DisplayName>
+    <Description xml:space="preserve">Adds support for Broccoli brocfile.js files as well as Ember-CLI's ember-cli-build.js build scripts based on Broccoli.</Description>
     <License>Resources\LICENSE</License>
     <Icon>Resources\icon.png</Icon>
     <PreviewImage>Resources\preview.png</PreviewImage>
-    <Tags>npm, package.json, task runner</Tags>
+    <Tags>broccoli, brocfile.js, ember-cli, ember.js, ember-cli-build.js, task runner</Tags>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />

@@ -57,7 +57,7 @@ namespace NpmTaskRunner
             {
                 TaskRunnerNode task = new TaskRunnerNode(key, true)
                 {
-                    Command = new TaskRunnerCommand(workingDirectory, "node.exe", scripts[key]),
+                    Command = new TaskRunnerCommand(workingDirectory, "cmd.exe", "/c " + scripts[key]),
                     Description = scripts[key],
                 };
 
