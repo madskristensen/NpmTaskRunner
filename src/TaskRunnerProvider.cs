@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TaskRunnerExplorer;
 
 namespace NpmTaskRunner
 {
-    [TaskRunnerExport("package.json")]
+    [TaskRunnerExport("Brocfile.js", "ember-cli-build.js")]
     class TaskRunnerProvider : ITaskRunner
     {
         private ImageSource _icon;
@@ -40,7 +40,7 @@ namespace NpmTaskRunner
 
         private ITaskRunnerNode LoadHierarchy(string configPath)
         {
-            ITaskRunnerNode root = new TaskRunnerNode("NPM Scripts");
+            ITaskRunnerNode root = new TaskRunnerNode("Broccoli Commands");
 
             string workingDirectory = Path.GetDirectoryName(configPath);
 
@@ -49,15 +49,15 @@ namespace NpmTaskRunner
             if (scripts == null)
                 return root;
 
-            TaskRunnerNode tasks = new TaskRunnerNode("Scripts");
-            tasks.Description = "Scripts specified in the \"scripts\" JSON element.";
+            TaskRunnerNode tasks = new TaskRunnerNode("Commands");
+            tasks.Description = "Broccoli CLI commands.";
             root.Children.Add(tasks);
 
             foreach (var key in scripts.Keys.OrderBy(k => k))
             {
                 TaskRunnerNode task = new TaskRunnerNode(key, true)
                 {
-                    Command = new TaskRunnerCommand(workingDirectory, "cmd.exe", "/c " + scripts[key]),
+                    Command = new TaskRunnerCommand(workingDirectory, "node.exe", scripts[key]),
                     Description = scripts[key],
                 };
 
