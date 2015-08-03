@@ -59,7 +59,7 @@ namespace AlfredTrx.Helpers
                 ++lineNumber;
             }
 
-            return textUtil.Insert(new Range { LineNumber = 1, LineRange = new LineRange { Start = 0, Length = bindingsXml.Length } }, bindingsText, true);
+            return textUtil.Insert(new Range(), bindingsText, true);
         }
     }
 }
