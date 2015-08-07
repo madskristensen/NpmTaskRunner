@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 
-namespace AlfredTrx.Helpers
+namespace NpmTaskRunner.Helpers
 {
     internal class FileTextUtil : ITextUtil
     {
         private int _currentLineLength;
-        private string _filename;
+        private readonly string _filename;
         private int _lineNumber;
 
         public FileTextUtil(string filename)
@@ -14,10 +14,7 @@ namespace AlfredTrx.Helpers
             _filename = filename;
         }
 
-        public Range CurrentLineRange
-        {
-            get { return new Range { LineNumber = _lineNumber, LineRange = new LineRange { Start = 0, Length = _currentLineLength } }; }
-        }
+        public Range CurrentLineRange => new Range { LineNumber = _lineNumber, LineRange = new LineRange { Start = 0, Length = _currentLineLength } };
 
         public bool Delete(Range range)
         {
@@ -26,7 +23,6 @@ namespace AlfredTrx.Helpers
                 return true;
             }
 
-            bool success = true;
             string fileContents = File.ReadAllText(_filename);
 
             using (StringReader reader = new StringReader(fileContents))
@@ -47,7 +43,7 @@ namespace AlfredTrx.Helpers
                 }
             }
 
-            return success;
+            return true;
         }
 
         public bool Insert(Range range, string text, bool addNewline)
@@ -57,7 +53,6 @@ namespace AlfredTrx.Helpers
                 return true;
             }
 
-            bool success = true;
             string fileContents = File.ReadAllText(_filename);
 
             using (StringReader reader = new StringReader(fileContents))
@@ -78,7 +73,7 @@ namespace AlfredTrx.Helpers
                 }
             }
 
-            return success;
+            return true;
         }
 
         public bool TryReadLine(out string line)
@@ -103,6 +98,16 @@ namespace AlfredTrx.Helpers
                 _currentLineLength = 0;
                 return false;
             }
+        }
+
+        public string ReadAllText()
+        {
+            return File.ReadAllText(_filename);
+        }
+
+        public void Reset()
+        {
+            _lineNumber = 0;
         }
 
         private bool SeekTo(StringReader reader, TextWriter writer, Range range, out string lineText)
@@ -139,6 +144,10 @@ namespace AlfredTrx.Helpers
             }
 
             return success;
+        }
+
+        public void FormatRange(LineRange range)
+        {
         }
     }
 }

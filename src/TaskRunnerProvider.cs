@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using AlfredTrx.Helpers;
 using Microsoft.VisualStudio.TaskRunnerExplorer;
+using NpmTaskRunner.Helpers;
 
 namespace NpmTaskRunner
 {

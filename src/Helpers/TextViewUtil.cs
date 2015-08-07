@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 
-namespace AlfredTrx.Helpers
+namespace NpmTaskRunner.Helpers
 {
     public static class TextViewUtil
     {
