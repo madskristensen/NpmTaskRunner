@@ -2,7 +2,7 @@
 using System.Windows.Media;
 using Microsoft.VisualStudio.TaskRunnerExplorer;
 
-namespace AlfredTrx.Helpers
+namespace NpmTaskRunner.Helpers
 {
     public abstract class TaskRunnerConfigBase : ITaskRunnerConfig
     {
@@ -33,12 +33,26 @@ namespace AlfredTrx.Helpers
 
         public string LoadBindings(string configPath)
         {
-            return BindingsPersister.Load(configPath);
+            try
+            {
+                return BindingsPersister.Load(configPath);
+            }
+            catch
+            {
+                return "<binding />";
+            }
         }
 
         public bool SaveBindings(string configPath, string bindingsXml)
         {
-            return BindingsPersister.Save(configPath, bindingsXml);
+            try
+            {
+                return BindingsPersister.Save(configPath, bindingsXml);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         protected virtual void Dispose(bool isDisposing)

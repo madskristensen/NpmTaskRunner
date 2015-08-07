@@ -1,4 +1,4 @@
-﻿namespace AlfredTrx.Helpers
+﻿namespace NpmTaskRunner.Helpers
 {
     public struct Range
     {
