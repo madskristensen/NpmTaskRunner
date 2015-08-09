@@ -46,6 +46,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Completion\JsonTreeVisitor.cs" />
+    <Compile Include="Completion\BindingsCompletionProvider.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Helpers\FileTextUtil.cs" />
     <Compile Include="Helpers\IPersistTaskRunnerBindings.cs" />
     <Compile Include="Helpers\ITextUtil.cs" />

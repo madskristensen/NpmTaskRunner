@@ -9,7 +9,7 @@ namespace NpmTaskRunner.Helpers
 {
     public static class PersistTaskRunnerBindingsExtensions
     {
-        private const string BindingsName = "-vs-bindings";
+        private const string BindingsName = Constants.ELEMENT_NAME;
 
         public static string Load(this IPersistTaskRunnerBindings persister, string configPath)
         {
