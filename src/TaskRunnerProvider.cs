@@ -10,7 +10,7 @@ using NpmTaskRunner.Helpers;
 
 namespace NpmTaskRunner
 {
-    [TaskRunnerExport("package.json")]
+    [TaskRunnerExport(Constants.FILENAME)]
     class TaskRunnerProvider : ITaskRunner
     {
         private ImageSource _icon;
@@ -40,7 +40,7 @@ namespace NpmTaskRunner
 
         private ITaskRunnerNode LoadHierarchy(string configPath)
         {
-            ITaskRunnerNode root = new TaskRunnerNode("NPM Scripts");
+            ITaskRunnerNode root = new TaskRunnerNode(Constants.TASK_CATEGORY);
 
             string workingDirectory = Path.GetDirectoryName(configPath);
 

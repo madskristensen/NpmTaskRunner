@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace NpmTaskRunner
 {
     class Constants
     {
         public const string FILENAME = "package.json";
-        public const string ELEMENT_NAME = "-vs-bindings";
+        public const string ELEMENT_NAME = "-vs-binding";
+        public const string TASK_CATEGORY = "NPM Scripts";
     }
 }
