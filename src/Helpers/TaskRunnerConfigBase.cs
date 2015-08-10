@@ -22,9 +22,7 @@ namespace NpmTaskRunner.Helpers
         public virtual ImageSource Icon => SharedIcon ?? (SharedIcon = LoadRootNodeIcon());
 
         public ITaskRunnerNode TaskHierarchy { get; }
-
-        protected abstract IPersistTaskRunnerBindings BindingsPersister { get; }
-
+        
         public void Dispose()
         {
             Dispose(true);
