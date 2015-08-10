@@ -46,10 +46,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Helpers\FileTextUtil.cs" />
-    <Compile Include="Helpers\IPersistTaskRunnerBindings.cs" />
     <Compile Include="Helpers\ITextUtil.cs" />
     <Compile Include="Helpers\LineRange.cs" />
-    <Compile Include="Helpers\PersistTaskRunnerBindingsExtensions.cs" />
+    <Compile Include="Helpers\BindingsPersister.cs" />
     <Compile Include="Helpers\Range.cs" />
     <Compile Include="Helpers\TaskRunnerConfig.cs" />
     <Compile Include="Helpers\TaskRunnerConfigBase.cs" />
@@ -57,7 +56,6 @@
     <Compile Include="Helpers\TextUtilExtensions.cs" />
     <Compile Include="Helpers\TextViewUtil.cs" />
     <Compile Include="Helpers\VsTextViewTextUtil.cs" />
-    <Compile Include="JsonBindingsPersister.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskParser.cs" />
     <Compile Include="TaskRunnerProvider.cs" />

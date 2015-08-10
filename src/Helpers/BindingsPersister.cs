@@ -7,11 +7,11 @@ using Newtonsoft.Json.Linq;
 
 namespace NpmTaskRunner.Helpers
 {
-    public static class PersistTaskRunnerBindingsExtensions
+    public static class BindingsPersister
     {
         private const string BindingsName = "-vs-bindings";
 
-        public static string Load(this IPersistTaskRunnerBindings persister, string configPath)
+        public static string Load(string configPath)
         {
             IVsTextView configTextView = TextViewUtil.FindTextViewFor(configPath);
             ITextUtil textUtil;
@@ -46,7 +46,7 @@ namespace NpmTaskRunner.Helpers
             return "<binding />";
         }
 
-        public static bool Save(this IPersistTaskRunnerBindings persister, string configPath, string bindingsXml)
+        public static bool Save(string configPath, string bindingsXml)
         {
             XElement bindingsXmlObject = XElement.Parse(bindingsXml);
             JObject bindingsXmlBody = JObject.Parse(@"{}");

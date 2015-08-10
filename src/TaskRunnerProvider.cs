@@ -34,7 +34,7 @@ namespace NpmTaskRunner
 
             return await Task.Run(() =>
             {
-                return new TaskRunnerConfig<JsonBindingsPersister>(context, hierarchy, _icon);
+                return new TaskRunnerConfig(context, hierarchy, _icon);
             });
         }
 
