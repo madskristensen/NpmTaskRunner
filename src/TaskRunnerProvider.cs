@@ -44,7 +44,7 @@ namespace NpmTaskRunner
 
             string workingDirectory = Path.GetDirectoryName(configPath);
 
-            Dictionary<string, string> scripts = TaskParser.LoadTasks(configPath);
+            var scripts = TaskParser.LoadTasks(configPath);
 
             if (scripts == null)
                 return root;
@@ -53,12 +53,12 @@ namespace NpmTaskRunner
             tasks.Description = "Scripts specified in the \"scripts\" JSON element.";
             root.Children.Add(tasks);
 
-            foreach (var key in scripts.Keys.OrderBy(k => k))
+            foreach (string script in scripts)
             {
-                TaskRunnerNode task = new TaskRunnerNode(key, true)
+                TaskRunnerNode task = new TaskRunnerNode(script, true)
                 {
-                    Command = new TaskRunnerCommand(workingDirectory, "cmd.exe", "/c " + scripts[key]),
-                    Description = scripts[key],
+                    Command = new TaskRunnerCommand(workingDirectory, "cmd.exe", "/c npm run " + script),
+                    Description = $"Runs the '{script}' script",
                 };
 
                 tasks.Children.Add(task);

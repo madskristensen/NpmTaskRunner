@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace NpmTaskRunner
 {
     class TaskParser
     {
-        public static Dictionary<string, string> LoadTasks(string configPath)
+        public static IEnumerable<string> LoadTasks(string configPath)
         {
-            Dictionary<string, string> dic = new Dictionary<string, string>();
+            List<string> list = new List<string>();
 
             try {
                 string document = File.ReadAllText(configPath);
@@ -18,7 +19,7 @@ namespace NpmTaskRunner
 
                 foreach (var child in children)
                 {
-                    dic.Add(child.Name, child.Value.ToString());
+                    list.Add(child.Name);
                 }
             }
             catch
@@ -27,7 +28,7 @@ namespace NpmTaskRunner
                 // TODO: Implement logger
             }
 
-            return dic;
+            return list.OrderBy(k => k);
         }
     }
 }
