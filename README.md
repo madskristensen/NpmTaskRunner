@@ -1,4 +1,4 @@
-## NPM Scripts Task Runner extension
+# NPM Scripts Task Runner extension
 
 Adds support for package.json's NPM scripts in Visual Studio 2015's
 Task Runner Explorer.
@@ -10,7 +10,7 @@ Download the extension at the
 or get the
 [nightly build](http://vsixgallery.com/extension/d7f89ba3-815c-4feb-89b9-68d1654e2138/)
 
-### NPM scripts
+## NPM scripts
 
 Inside package.json it is possible to add custom scripts inside
 the "scripts" element.
@@ -26,7 +26,7 @@ the "scripts" element.
 }
 ```
 
-### Execute scripts
+## Execute scripts
 
 When scripts are specified, the Task Runner Explorer
 will show those scripts.
@@ -35,16 +35,19 @@ will show those scripts.
 
 Each script can be executed by double-clicking the task.
 
-### Bindings
+## Bindings
 
 Script bindings make it possible to associate individual scripts
 with Visual Studio events such as "After build" etc.
 
 ![Visual Studio bindings](art/bindings.png)
 
-### Intellisense
+## Intellisense
 
 If you manually edit bindings in package.json, then full
 Intellisense is provided.
 
 ![Visual Studio Intellisense](art/intellisense.png)
+
+## License
+[Apache 2.0](LICENSE)
