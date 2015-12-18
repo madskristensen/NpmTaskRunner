@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <Extern href="stdidcmd.h"/>
+    <Extern href="vsshlids.h"/>
+    <Include href="KnownImageIds.vsct"/>
+
+    <Commands package="guidVSPackage">
+        <Buttons>
+            <Button guid="guidVSPackageCmdSet" id="cmdVerbose" priority="0x0100" type="Button">
+                <Parent guid="guidTaskRunnerExplorerCmdSet" id="IDG_TASKRUNNER_TOOLBAR_CUSTOM_COMMANDS" />
+                <Icon guid="ImageCatalogGuid" id="Log" />
+                <CommandFlag>IconIsMoniker</CommandFlag>
+                <CommandFlag>DefaultInvisible</CommandFlag>
+                <CommandFlag>DynamicVisibility</CommandFlag>
+                <Strings>
+                    <ButtonText>Verbose logging</ButtonText>
+                </Strings>
+            </Button>
+        </Buttons>
+    </Commands>
+
+    <Symbols>
+        <!-- This is the package guid. -->
+        <GuidSymbol name="guidVSPackage" value="{68f5ee87-8633-4f4c-8849-fdb6e22ef84a}" />
+
+        <GuidSymbol name="guidVSPackageCmdSet" value="{b13c1717-1c31-4be2-9798-7d734b9fd445}">
+            <IDSymbol name="cmdVerbose" value="0x0100" />
+        </GuidSymbol>
+
+        <GuidSymbol name="guidTaskRunnerExplorerCmdSet" value="{9E78B319-2142-4381-873C-6EC83F092915}">
+            <IDSymbol name="IDG_TASKRUNNER_TOOLBAR_CUSTOM_COMMANDS" value="0x2002" />
+        </GuidSymbol>
+    </Symbols>
+</CommandTable>

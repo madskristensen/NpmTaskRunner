@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -11,7 +12,8 @@ namespace NpmTaskRunner
         {
             List<string> list = new List<string>();
 
-            try {
+            try
+            {
                 string document = File.ReadAllText(configPath);
                 JObject root = JObject.Parse(document);
 
@@ -22,10 +24,10 @@ namespace NpmTaskRunner
                     list.Add(child.Name);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Log(ex);
                 return null;
-                // TODO: Implement logger
             }
 
             return list.OrderBy(k => k);

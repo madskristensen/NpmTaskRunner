@@ -6,6 +6,7 @@ install:
 
 before_build:
   - ps: Vsix-IncrementVsixVersion | Vsix-UpdateBuildVersion
+  - ps: Vsix-TokenReplacement src\Constants.cs 'VERSION = "([0-9\\.]+)"' 'VERSION = "{version}"'
 
 build_script:
   - nuget restore -Verbosity quiet

@@ -17,12 +17,12 @@ namespace NpmTaskRunner.Helpers
         }
 
         /// <summary>
-        /// TaskRunner icon 
+        /// TaskRunner icon
         /// </summary>
         public virtual ImageSource Icon => SharedIcon ?? (SharedIcon = LoadRootNodeIcon());
 
         public ITaskRunnerNode TaskHierarchy { get; }
-        
+
         public void Dispose()
         {
             Dispose(true);
@@ -45,6 +45,7 @@ namespace NpmTaskRunner.Helpers
         {
             try
             {
+                Telemetry.TrackEvent("Updating bindings");
                 return BindingsPersister.Save(configPath, bindingsXml);
             }
             catch

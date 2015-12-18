@@ -1,15 +1,16 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+using NpmTaskRunner;
 
-[assembly: AssemblyTitle("Npm Scripts Task Runner")]
+[assembly: AssemblyTitle(Constants.VSIX_NAME)]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Mads Kristensen")]
-[assembly: AssemblyProduct("Npm Scripts Task Runner")]
+[assembly: AssemblyProduct(Constants.VSIX_NAME)]
 [assembly: AssemblyCopyright("Mads Kristensen")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion(Constants.VERSION)]
+[assembly: AssemblyFileVersion(Constants.VERSION)]

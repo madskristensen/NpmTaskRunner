@@ -14,15 +14,30 @@ namespace NpmTaskRunner
     class TaskRunnerProvider : ITaskRunner
     {
         private ImageSource _icon;
+        private List<ITaskRunnerOption> _options = null;
 
         public TaskRunnerProvider()
         {
             _icon = new BitmapImage(new Uri(@"pack://application:,,,/NpmTaskRunner;component/Resources/npm.png"));
         }
 
+        private void InitializeWebPackRunnerOptions()
+        {
+            _options = new List<ITaskRunnerOption>();
+            _options.Add(new TaskRunnerOption("Verbose", PackageIds.cmdVerbose, PackageGuids.guidVSPackageCmdSet, false, "-d"));
+        }
+
         public List<ITaskRunnerOption> Options
         {
-            get { return null; }
+            get
+            {
+                if (_options == null)
+                {
+                    InitializeWebPackRunnerOptions();
+                }
+
+                return _options;
+            }
         }
 
         public async Task<ITaskRunnerConfig> ParseConfig(ITaskRunnerCommandContext context, string configPath)
@@ -45,6 +60,8 @@ namespace NpmTaskRunner
             string workingDirectory = Path.GetDirectoryName(configPath);
 
             var scripts = TaskParser.LoadTasks(configPath);
+
+            Telemetry.TrackEvent("Tasks loaded");
 
             if (scripts == null)
                 return root;
