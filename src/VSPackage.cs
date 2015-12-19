@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace NpmTaskRunner
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", Constants.VERSION, IconResourceID = 400)]
-    [Guid(VSPackage.PackageGuidString)]
+    [Guid(PackageGuids.guidVSPackageString)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class VSPackage : Package
     {
-        public const string PackageGuidString = "68f5ee87-8633-4f4c-8849-fdb6e22ef84a";
-
         protected override void Initialize()
         {
             Logger.Initialize(this, Constants.VSIX_NAME);
