@@ -26,8 +26,14 @@ the "scripts" element.
 }
 ```
 
-## Execute scripts
+## Task Runner Explorer
+Open Task Runner Explorer by right-clicking the WebPack
+configuration file and select **Task Runner Explorer** from
+the context menu:
 
+![Open Task Runner Explorer](art/open-trx.png)
+
+### Execute scripts
 When scripts are specified, the Task Runner Explorer
 will show those scripts.
 
@@ -35,8 +41,18 @@ will show those scripts.
 
 Each script can be executed by double-clicking the task.
 
-## Bindings
+![Console](art/console.png)
 
+### Verbose output
+A button for turning verbose output on and off is located
+at the left toolbar.
+
+![Verbose Output](art/verbose-output.png)
+
+The button is a toggle button that can be left
+on or off for as long as needed.
+
+### Bindings
 Script bindings make it possible to associate individual scripts
 with Visual Studio events such as "After build" etc.
 
