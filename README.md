@@ -27,9 +27,8 @@ the "scripts" element.
 ```
 
 ## Task Runner Explorer
-Open Task Runner Explorer by right-clicking the WebPack
-configuration file and select **Task Runner Explorer** from
-the context menu:
+Open Task Runner Explorer by right-clicking the `package.json`
+file and select **Task Runner Explorer** from the context menu:
 
 ![Open Task Runner Explorer](art/open-trx.png)
 
