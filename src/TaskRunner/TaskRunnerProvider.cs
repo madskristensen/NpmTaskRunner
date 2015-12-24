@@ -21,7 +21,7 @@ namespace NpmTaskRunner
             _icon = new BitmapImage(new Uri(@"pack://application:,,,/NpmTaskRunner;component/Resources/npm.png"));
         }
 
-        private void InitializeWebPackRunnerOptions()
+        private void InitializeNpmTaskRunnerOptions()
         {
             _options = new List<ITaskRunnerOption>();
             _options.Add(new TaskRunnerOption("Verbose", PackageIds.cmdVerbose, PackageGuids.guidVSPackageCmdSet, false, "-d"));
@@ -33,7 +33,7 @@ namespace NpmTaskRunner
             {
                 if (_options == null)
                 {
-                    InitializeWebPackRunnerOptions();
+                    InitializeNpmTaskRunnerOptions();
                 }
 
                 return _options;
