@@ -44,7 +44,7 @@ namespace NpmTaskRunner
         {
             ITaskRunnerNode hierarchy = LoadHierarchy(configPath);
 
-            if (!hierarchy.Children.Any() && !hierarchy.Children.First().Children.Any())
+            if (!hierarchy.Children.Any() || !hierarchy.Children.First().Children.Any())
                 return null;
 
             return await Task.Run(() =>
