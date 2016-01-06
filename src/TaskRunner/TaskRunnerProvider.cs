@@ -74,7 +74,7 @@ namespace NpmTaskRunner
             {
                 TaskRunnerNode task = new TaskRunnerNode(script, true)
                 {
-                    Command = new TaskRunnerCommand(workingDirectory, "cmd.exe", "/c npm run " + script),
+                    Command = new TaskRunnerCommand(workingDirectory, "cmd.exe", $"/c npm run {script} --color=always"),
                     Description = $"Runs the '{script}' script",
                 };
 
