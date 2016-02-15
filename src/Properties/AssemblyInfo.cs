@@ -2,15 +2,15 @@
 using System.Runtime.InteropServices;
 using NpmTaskRunner;
 
-[assembly: AssemblyTitle(Constants.VSIX_NAME)]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle(Vsix.Name)]
+[assembly: AssemblyDescription(Vsix.Description)]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Mads Kristensen")]
-[assembly: AssemblyProduct(Constants.VSIX_NAME)]
-[assembly: AssemblyCopyright("Mads Kristensen")]
+[assembly: AssemblyCompany(Vsix.Author)]
+[assembly: AssemblyProduct(Vsix.Name)]
+[assembly: AssemblyCopyright(Vsix.Author)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion(Constants.VERSION)]
-[assembly: AssemblyFileVersion(Constants.VERSION)]
+[assembly: AssemblyVersion(Vsix.Version)]
+[assembly: AssemblyFileVersion(Vsix.Version)]
