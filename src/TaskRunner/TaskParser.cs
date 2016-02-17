@@ -17,11 +17,15 @@ namespace NpmTaskRunner
                 string document = File.ReadAllText(configPath);
                 JObject root = JObject.Parse(document);
 
-                var children = root["scripts"].Children<JProperty>();
+                JToken scripts = root["scripts"];
 
-                foreach (var child in children)
-                {
-                    list.Add(child.Name);
+                if (scripts != null) {
+                    var children = scripts.Children<JProperty>();
+
+                    foreach (var child in children)
+                    {
+                        list.Add(child.Name);
+                    }
                 }
             }
             catch (Exception ex)
