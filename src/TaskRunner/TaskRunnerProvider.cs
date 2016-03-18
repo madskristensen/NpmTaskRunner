@@ -57,31 +57,80 @@ namespace NpmTaskRunner
         {
             ITaskRunnerNode root = new TaskRunnerNode(Constants.TASK_CATEGORY);
 
-            string workingDirectory = Path.GetDirectoryName(configPath);
+            string cwd = Path.GetDirectoryName(configPath);
+            var hierarchy = GetHierarchy(TaskParser.LoadTasks(configPath));
 
-            var scripts = TaskParser.LoadTasks(configPath);
+            if (hierarchy == null)
+                return root;
 
             Telemetry.TrackEvent("Tasks loaded");
-
-            if (scripts == null)
-                return root;
 
             TaskRunnerNode tasks = new TaskRunnerNode("Scripts");
             tasks.Description = "Scripts specified in the \"scripts\" JSON element.";
             root.Children.Add(tasks);
 
-            foreach (string script in scripts)
+            foreach (var parent in hierarchy.Keys)
             {
-                TaskRunnerNode task = new TaskRunnerNode(script, true)
-                {
-                    Command = new TaskRunnerCommand(workingDirectory, "cmd.exe", $"/c npm run {script} --color=always"),
-                    Description = $"Runs the '{script}' script",
-                };
+                TaskRunnerNode parentTask = CreateTask(cwd, parent);
 
-                tasks.Children.Add(task);
+                foreach (var child in hierarchy[parent])
+                {
+                    TaskRunnerNode childTask = CreateTask(cwd, child);
+                    parentTask.Children.Add(childTask);
+                }
+
+                tasks.Children.Add(parentTask);
             }
 
             return root;
+        }
+
+        private static TaskRunnerNode CreateTask(string cwd, string name)
+        {
+            return new TaskRunnerNode(name, true)
+            {
+                Command = new TaskRunnerCommand(cwd, "cmd.exe", $"/c npm run {name} --color=always"),
+                Description = $"Runs the '{name}' script",
+            };
+        }
+
+        private SortedList<string, IEnumerable<string>> GetHierarchy(IEnumerable<string> alltasks)
+        {
+            if (alltasks == null)
+                return null;
+
+            var events = alltasks.Where(t => t.StartsWith("pre") || t.StartsWith("post"));
+            var parents = alltasks.Except(events);
+
+            var hierarchy = new SortedList<string, IEnumerable<string>>();
+
+            foreach (var parent in parents)
+            {
+                var children = GetChildScripts(parent, events);
+                hierarchy.Add(parent, children);
+                events = events.Except(children);
+            }
+
+            foreach (var child in events)
+            {
+                hierarchy.Add(child, Enumerable.Empty<string>());
+            }
+
+            return hierarchy;
+        }
+
+        private static IEnumerable<string> GetChildScripts(string parent, IEnumerable<string> events)
+        {
+            var candidates = events.Where(e => e.EndsWith(parent, StringComparison.OrdinalIgnoreCase));
+
+            foreach (var candidate in candidates)
+            {
+                if (candidate.StartsWith("post") && "post" + parent == candidate)
+                    yield return candidate;
+
+                if (candidate.StartsWith("pre") && "pre" + parent == candidate)
+                    yield return candidate;
+            }
         }
     }
 }
