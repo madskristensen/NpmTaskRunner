@@ -57,17 +57,17 @@ namespace NpmTaskRunner
         {
             ITaskRunnerNode root = new TaskRunnerNode(Constants.TASK_CATEGORY);
 
-            string cwd = Path.GetDirectoryName(configPath);
-            var hierarchy = GetHierarchy(TaskParser.LoadTasks(configPath));
+            var scripts = TaskParser.LoadTasks(configPath);
+            var hierarchy = GetHierarchy(scripts);
 
             if (hierarchy == null)
                 return root;
 
-            Telemetry.TrackEvent("Tasks loaded");
-
             TaskRunnerNode tasks = new TaskRunnerNode("Scripts");
             tasks.Description = "Scripts specified in the \"scripts\" JSON element.";
             root.Children.Add(tasks);
+
+            string cwd = Path.GetDirectoryName(configPath);
 
             foreach (var parent in hierarchy.Keys)
             {
@@ -81,6 +81,8 @@ namespace NpmTaskRunner
 
                 tasks.Children.Add(parentTask);
             }
+
+            Telemetry.TrackEvent("Tasks loaded");
 
             return root;
         }

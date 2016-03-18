@@ -10,7 +10,7 @@ namespace NpmTaskRunner
     {
         public static IEnumerable<string> LoadTasks(string configPath)
         {
-            List<string> list = new List<string>();
+            var list = new List<string>();
 
             try
             {
@@ -19,12 +19,16 @@ namespace NpmTaskRunner
 
                 JToken scripts = root["scripts"];
 
-                if (scripts != null) {
+                if (scripts != null)
+                {
                     var children = scripts.Children<JProperty>();
+
+                    list.Add("install");
 
                     foreach (var child in children)
                     {
-                        list.Add(child.Name);
+                        if (!list.Contains(child.Name))
+                            list.Add(child.Name);
                     }
                 }
             }
