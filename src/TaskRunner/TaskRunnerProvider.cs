@@ -89,7 +89,9 @@ namespace NpmTaskRunner
 
         private static TaskRunnerNode CreateTask(string cwd, string name)
         {
-            return new TaskRunnerNode(name, true)
+            bool invokable = !Constants.RESERVED_TASKS.Contains(name, StringComparer.OrdinalIgnoreCase);
+
+            return new TaskRunnerNode(name, invokable)
             {
                 Command = new TaskRunnerCommand(cwd, "cmd.exe", $"/c npm run {name} --color=always"),
                 Description = $"Runs the '{name}' script",
@@ -108,7 +110,7 @@ namespace NpmTaskRunner
 
             foreach (var parent in parents)
             {
-                var children = GetChildScripts(parent, events);
+                var children = GetChildScripts(parent, events).OrderByDescending(child => child);
                 hierarchy.Add(parent, children);
                 events = events.Except(children);
             }

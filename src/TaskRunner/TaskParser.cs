@@ -23,13 +23,13 @@ namespace NpmTaskRunner
                 {
                     var children = scripts.Children<JProperty>();
 
-                    list.Add("install");
-
                     foreach (var child in children)
                     {
                         if (!list.Contains(child.Name))
                             list.Add(child.Name);
                     }
+
+                    AddParentIfOrphansExist(list, Constants.RESERVED_TASKS);
                 }
             }
             catch (Exception ex)
@@ -39,6 +39,26 @@ namespace NpmTaskRunner
             }
 
             return list.OrderBy(k => k);
+        }
+
+        private static void AddParentIfOrphansExist(List<string> list, params string[] parents)
+        {
+            string[] prefixes = { "pre", "post" };
+
+            foreach (var parent in parents)
+            {
+                if (list.Contains(parent, StringComparer.OrdinalIgnoreCase))
+                    continue;
+
+                foreach (var prefix in prefixes)
+                {
+                    if (list.Contains(prefix + parent, StringComparer.OrdinalIgnoreCase))
+                    {
+                        list.Add(parent);
+                        break;
+                    }
+                }
+            }
         }
     }
 }
