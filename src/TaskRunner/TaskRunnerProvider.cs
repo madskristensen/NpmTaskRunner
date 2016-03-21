@@ -146,7 +146,7 @@ namespace NpmTaskRunner
                 return null;
 
             var events = alltasks.Where(t => t.StartsWith("pre") || t.StartsWith("post"));
-            var parents = alltasks.Except(events);
+            var parents = alltasks.Except(events).ToList();
 
             var hierarchy = new SortedList<string, IEnumerable<string>>();
 
@@ -154,7 +154,7 @@ namespace NpmTaskRunner
             {
                 var children = GetChildScripts(parent, events).OrderByDescending(child => child);
                 hierarchy.Add(parent, children);
-                events = events.Except(children);
+                events = events.Except(children).ToList();
             }
 
             foreach (var child in events)
