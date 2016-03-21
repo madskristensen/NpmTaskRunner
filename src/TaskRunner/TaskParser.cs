@@ -8,9 +8,11 @@ namespace NpmTaskRunner
 {
     class TaskParser
     {
-        public static IEnumerable<string> LoadTasks(string configPath)
+        static string[] _dependencies = { "dependencies", "devDependencies", "peerDependencies", "optionalDependencies", "bundledDependencies", "bundleDependencies" };
+
+        public static SortedList<string, string> LoadTasks(string configPath)
         {
-            var list = new List<string>();
+            var list = new SortedList<string, string>();
 
             try
             {
@@ -25,11 +27,16 @@ namespace NpmTaskRunner
 
                     foreach (var child in children)
                     {
-                        if (!list.Contains(child.Name))
-                            list.Add(child.Name);
+                        AddTasks(list, child.Name);
                     }
 
-                    AddParentIfOrphansExist(list, Constants.RESERVED_TASKS);
+                    foreach (var reserved in Constants.ALWAYS_TASKS)
+                    {
+                        if (!list.ContainsKey(reserved))
+                            list.Add(reserved, $"npm {reserved}");
+                    }
+
+                    AddMissingDefaultParents(list);
                 }
             }
             catch (Exception ex)
@@ -38,27 +45,80 @@ namespace NpmTaskRunner
                 return null;
             }
 
-            return list.OrderBy(k => k);
+            return list;
         }
 
-        private static void AddParentIfOrphansExist(List<string> list, params string[] parents)
+        private static void AddMissingDefaultParents(SortedList<string, string> list)
         {
             string[] prefixes = { "pre", "post" };
+            var newParents = new List<string>();
 
-            foreach (var parent in parents)
-            {
-                if (list.Contains(parent, StringComparer.OrdinalIgnoreCase))
-                    continue;
-
-                foreach (var prefix in prefixes)
+            foreach (var task in list.Keys)
+                foreach (string prefix in prefixes)
                 {
-                    if (list.Contains(prefix + parent, StringComparer.OrdinalIgnoreCase))
+                    if (task.Length <= prefix.Length)
+                        continue;
+
+                    var parent = task.Substring(prefix.Length);
+
+                    if (task.StartsWith(prefix) && !list.ContainsKey(parent) && Constants.DEFAULT_TASKS.Contains(parent))
+                        newParents.Add(parent);
+                }
+
+            foreach (var parent in newParents)
+            {
+                list.Add(parent, $"npm {parent}");
+            }
+        }
+
+        public static IDictionary<string, List<string>> LoadDependencies(string configPath)
+        {
+            var dic = new Dictionary<string, List<string>>();
+
+            try
+            {
+                string document = File.ReadAllText(configPath);
+                JObject root = JObject.Parse(document);
+
+                foreach (var dep in _dependencies)
+                {
+                    JToken scripts = root[dep];
+
+                    if (scripts != null)
                     {
-                        list.Add(parent);
-                        break;
+                        dic[dep] = new List<string>();
+
+                        var children = scripts.Children<JProperty>();
+
+                        foreach (var child in children)
+                        {
+                            dic[dep].Add(child.Name);
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Logger.Log(ex);
+                return null;
+            }
+
+            return dic;
+        }
+
+        private static void AddTasks(SortedList<string, string> list, string child)
+        {
+            if (list.ContainsKey(child))
+                return;
+
+            if (child.Equals("install", StringComparison.OrdinalIgnoreCase))
+                list.Add("install", "npm install");
+
+            else if (child.Equals("uninstall", StringComparison.OrdinalIgnoreCase))
+                list.Add("uninstall", null);
+
+            else
+                list.Add(child, $"npm run {child}");
         }
     }
 }

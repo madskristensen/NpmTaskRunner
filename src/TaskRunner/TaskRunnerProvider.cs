@@ -58,28 +58,27 @@ namespace NpmTaskRunner
             ITaskRunnerNode root = new TaskRunnerNode(Constants.TASK_CATEGORY);
 
             var scripts = TaskParser.LoadTasks(configPath);
-            var hierarchy = GetHierarchy(scripts);
+            var hierarchy = GetHierarchy(scripts.Keys);
 
             if (hierarchy == null)
                 return root;
 
-            TaskRunnerNode tasks = new TaskRunnerNode("Scripts");
-            tasks.Description = "Scripts specified in the \"scripts\" JSON element.";
-            root.Children.Add(tasks);
+            var defaults = hierarchy.Where(h => Constants.ALL_DEFAULT_TASKS.Contains(h.Key));
 
-            string cwd = Path.GetDirectoryName(configPath);
+            TaskRunnerNode defaultTasks = new TaskRunnerNode("Defaults");
+            defaultTasks.Description = "Default predefined npm commands.";
+            root.Children.Add(defaultTasks);
+            AddCommands(configPath, scripts, defaults, defaultTasks);
 
-            foreach (var parent in hierarchy.Keys)
+            if (hierarchy.Count != defaults.Count())
             {
-                TaskRunnerNode parentTask = CreateTask(cwd, parent);
+                var customs = hierarchy.Except(defaults);
 
-                foreach (var child in hierarchy[parent])
-                {
-                    TaskRunnerNode childTask = CreateTask(cwd, child);
-                    parentTask.Children.Add(childTask);
-                }
+                TaskRunnerNode customTasks = new TaskRunnerNode("Custom");
+                customTasks.Description = "Custom npm commands.";
+                root.Children.Add(customTasks);
 
-                tasks.Children.Add(parentTask);
+                AddCommands(configPath, scripts, customs, customTasks);
             }
 
             Telemetry.TrackEvent("Tasks loaded");
@@ -87,14 +86,57 @@ namespace NpmTaskRunner
             return root;
         }
 
-        private static TaskRunnerNode CreateTask(string cwd, string name)
+        private void AddCommands(string configPath, SortedList<string, string> scripts, IEnumerable<KeyValuePair<string, IEnumerable<string>>> defaults, TaskRunnerNode tasks)
         {
-            bool invokable = !Constants.RESERVED_TASKS.Contains(name, StringComparer.OrdinalIgnoreCase);
+            string cwd = Path.GetDirectoryName(configPath);
 
-            return new TaskRunnerNode(name, invokable)
+            foreach (var parent in defaults)
             {
-                Command = new TaskRunnerCommand(cwd, "cmd.exe", $"/c npm run {name} --color=always"),
-                Description = $"Runs the '{name}' script",
+                TaskRunnerNode parentTask = CreateTask(cwd, parent.Key, scripts[parent.Key]);
+
+                if (parent.Key == "uninstall")
+                    AddDependencies(parentTask, configPath, cwd);
+
+                foreach (var child in parent.Value)
+                {
+                    TaskRunnerNode childTask = CreateTask(cwd, child, scripts[child]);
+                    parentTask.Children.Add(childTask);
+                }
+
+                tasks.Children.Add(parentTask);
+            }
+        }
+
+        private void AddDependencies(TaskRunnerNode uninstallNode, string configPath, string cwd)
+        {
+            var tasks = TaskParser.LoadDependencies(configPath);
+            string allPackages = string.Join(" ", tasks.Values.SelectMany(t => t));
+
+            uninstallNode.Command.Args = $"/c npm uninstall {allPackages} --color=always";
+
+            foreach (var dep in tasks.Keys)
+            {
+                var depPackages = string.Join(" ", tasks[dep]);
+                var depNode = CreateTask(cwd, dep, $"npm uninstall {depPackages}");
+
+                foreach (var package in tasks[dep])
+                {
+                    var child = CreateTask(cwd, package, $"npm uninstall {package}");
+                    depNode.Children.Add(child);
+                }
+
+                uninstallNode.Children.Add(depNode);
+            }
+        }
+
+        private static TaskRunnerNode CreateTask(string cwd, string name, string cmd)
+        {
+            bool isReserved = Constants.ALWAYS_TASKS.Contains(name, StringComparer.OrdinalIgnoreCase);
+
+            return new TaskRunnerNode(name, true)
+            {
+                Command = new TaskRunnerCommand(cwd, "cmd.exe", $"/c {cmd} --color=always"),
+                Description = $"Runs the '{name}' command",
             };
         }
 
