@@ -121,7 +121,7 @@ namespace NpmTaskRunner
 
                 foreach (var package in tasks[dep])
                 {
-                    var child = CreateTask(cwd, package, $"npm uninstall {package}");
+                    var child = CreateTask(cwd, $"uninstall {package}", $"npm uninstall {package}");
                     depNode.Children.Add(child);
                 }
 
