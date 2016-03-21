@@ -8,7 +8,7 @@ namespace NpmTaskRunner
 {
     class TaskParser
     {
-        static string[] _dependencies = { "dependencies", "devDependencies", "peerDependencies", "optionalDependencies", "bundledDependencies", "bundleDependencies" };
+        static string[] _dependencies = { "dependencies", "devDependencies", "optionalDependencies" };
 
         public static SortedList<string, string> LoadTasks(string configPath)
         {
