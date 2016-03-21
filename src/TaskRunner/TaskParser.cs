@@ -18,7 +18,6 @@ namespace NpmTaskRunner
             {
                 string document = File.ReadAllText(configPath);
                 JObject root = JObject.Parse(document);
-
                 JToken scripts = root["scripts"];
 
                 if (scripts != null)
@@ -30,13 +29,17 @@ namespace NpmTaskRunner
                         AddTasks(list, child.Name);
                     }
 
-                    foreach (var reserved in Constants.ALWAYS_TASKS)
+                    // Only fill default tasks if any scripts are found
+                    if (list.Any())
                     {
-                        if (!list.ContainsKey(reserved))
-                            list.Add(reserved, $"npm {reserved}");
-                    }
+                        foreach (var reserved in Constants.ALWAYS_TASKS)
+                        {
+                            if (!list.ContainsKey(reserved))
+                                list.Add(reserved, $"npm {reserved}");
+                        }
 
-                    AddMissingDefaultParents(list);
+                        AddMissingDefaultParents(list);
+                    }
                 }
             }
             catch (Exception ex)

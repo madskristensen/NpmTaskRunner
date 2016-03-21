@@ -86,11 +86,11 @@ namespace NpmTaskRunner
             return root;
         }
 
-        private void AddCommands(string configPath, SortedList<string, string> scripts, IEnumerable<KeyValuePair<string, IEnumerable<string>>> defaults, TaskRunnerNode tasks)
+        private void AddCommands(string configPath, SortedList<string, string> scripts, IEnumerable<KeyValuePair<string, IEnumerable<string>>> commands, TaskRunnerNode tasks)
         {
             string cwd = Path.GetDirectoryName(configPath);
 
-            foreach (var parent in defaults)
+            foreach (var parent in commands)
             {
                 TaskRunnerNode parentTask = CreateTask(cwd, parent.Key, scripts[parent.Key]);
 
