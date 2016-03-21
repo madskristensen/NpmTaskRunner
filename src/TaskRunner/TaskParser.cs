@@ -67,7 +67,8 @@ namespace NpmTaskRunner
 
             foreach (var parent in newParents)
             {
-                list.Add(parent, $"npm {parent}");
+                string cmd = parent == "version" ? null : $"npm {parent}";
+                list.Add(parent, cmd);
             }
         }
 
