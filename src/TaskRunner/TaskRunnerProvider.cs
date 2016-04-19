@@ -94,8 +94,8 @@ namespace NpmTaskRunner
             {
                 TaskRunnerNode parentTask = CreateTask(cwd, parent.Key, scripts[parent.Key]);
 
-                if (parent.Key == "uninstall")
-                    AddDependencies(parentTask, configPath, cwd);
+                //if (parent.Key == "uninstall")
+                //    AddDependencies(parentTask, configPath, cwd);
 
                 foreach (var child in parent.Value)
                 {
@@ -142,7 +142,7 @@ namespace NpmTaskRunner
 
         private SortedList<string, IEnumerable<string>> GetHierarchy(IEnumerable<string> alltasks)
         {
-            if (alltasks == null)
+            if (alltasks == null || !alltasks.Any())
                 return null;
 
             var events = alltasks.Where(t => t.StartsWith("pre") || t.StartsWith("post"));

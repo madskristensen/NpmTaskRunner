@@ -45,7 +45,6 @@ namespace NpmTaskRunner
             catch (Exception ex)
             {
                 Logger.Log(ex);
-                return null;
             }
 
             return list;
@@ -118,8 +117,8 @@ namespace NpmTaskRunner
             if (child.Equals("install", StringComparison.OrdinalIgnoreCase))
                 list.Add("install", "npm install");
 
-            else if (child.Equals("uninstall", StringComparison.OrdinalIgnoreCase))
-                list.Add("uninstall", null);
+            //else if (child.Equals("uninstall", StringComparison.OrdinalIgnoreCase))
+            //    list.Add("uninstall", null);
 
             else
                 list.Add(child, $"npm run {child}");
