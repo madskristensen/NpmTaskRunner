@@ -107,27 +107,27 @@ namespace NpmTaskRunner
             }
         }
 
-        private void AddDependencies(TaskRunnerNode uninstallNode, string configPath, string cwd)
-        {
-            var tasks = TaskParser.LoadDependencies(configPath);
-            string allPackages = string.Join(" ", tasks.Values.SelectMany(t => t));
+        //private void AddDependencies(TaskRunnerNode uninstallNode, string configPath, string cwd)
+        //{
+        //    var tasks = TaskParser.LoadDependencies(configPath);
+        //    string allPackages = string.Join(" ", tasks.Values.SelectMany(t => t));
 
-            uninstallNode.Command.Args = $"/c npm uninstall {allPackages} --color=always";
+        //    uninstallNode.Command.Args = $"/c npm uninstall {allPackages} --color=always";
 
-            foreach (var dep in tasks.Keys)
-            {
-                var depPackages = string.Join(" ", tasks[dep]);
-                var depNode = CreateTask(cwd, dep, $"npm uninstall {depPackages}");
+        //    foreach (var dep in tasks.Keys)
+        //    {
+        //        var depPackages = string.Join(" ", tasks[dep]);
+        //        var depNode = CreateTask(cwd, dep, $"npm uninstall {depPackages}");
 
-                foreach (var package in tasks[dep])
-                {
-                    var child = CreateTask(cwd, $"uninstall {package}", $"npm uninstall {package}");
-                    depNode.Children.Add(child);
-                }
+        //        foreach (var package in tasks[dep])
+        //        {
+        //            var child = CreateTask(cwd, $"uninstall {package}", $"npm uninstall {package}");
+        //            depNode.Children.Add(child);
+        //        }
 
-                uninstallNode.Children.Add(depNode);
-            }
-        }
+        //        uninstallNode.Children.Add(depNode);
+        //    }
+        //}
 
         private static TaskRunnerNode CreateTask(string cwd, string name, string cmd)
         {

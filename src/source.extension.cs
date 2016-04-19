@@ -11,7 +11,7 @@ namespace NpmTaskRunner
         public const string Name = "NPM Task Runner";
         public const string Description = "Adds support for package.json's NPM scripts in the Task Runner Explorer";
         public const string Language = "en-US";
-        public const string Version = "1.2";
+        public const string Version = "1.3";
         public const string Author = "Mads Kristensen";
         public const string Tags = "npm, package.json, task runner, scripts";
     }

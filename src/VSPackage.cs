@@ -14,9 +14,7 @@ namespace NpmTaskRunner
     {
         protected override void Initialize()
         {
-            Logger.Initialize(this, Vsix.Name);
-            Telemetry.Initialize(this, Vsix.Version, "27e387d5-9428-4617-b79f-bcc80d4247b0");
-
+            Logger.Initialize(this, Vsix.Name, Vsix.Version, "27e387d5-9428-4617-b79f-bcc80d4247b0");
             base.Initialize();
         }
     }
