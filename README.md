@@ -1,4 +1,4 @@
-# NPM Scripts Task Runner extension
+# NPM Task Runner extension
 
 Adds support for package.json's NPM scripts in Visual Studio 2015's
 Task Runner Explorer.
