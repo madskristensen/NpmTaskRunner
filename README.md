@@ -1,7 +1,4 @@
-# NPM Task Runner extension
-
-Adds support for package.json's NPM scripts in Visual Studio 2015's
-Task Runner Explorer.
+# NPM Task Runner
 
 [![Build status](https://ci.appveyor.com/api/projects/status/2cohf1g6n0ii7imq?svg=true)](https://ci.appveyor.com/project/madskristensen/npmtaskrunner)
 
@@ -10,7 +7,12 @@ Download the extension at the
 or get the
 [nightly build](http://vsixgallery.com/extension/d7f89ba3-815c-4feb-89b9-68d1654e2138/)
 
-## NPM scripts
+---------------------------------------------------------
+
+Adds support for npm scripts defined in package.json 
+directly in Visual Studio's Task Runner Explorer.
+
+## npm scripts
 
 Inside package.json it is possible to add custom scripts inside
 the "scripts" element.
