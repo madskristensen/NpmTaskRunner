@@ -81,8 +81,6 @@ namespace NpmTaskRunner
                 AddCommands(configPath, scripts, customs, customTasks);
             }
 
-            Telemetry.TrackEvent("Tasks loaded");
-
             return root;
         }
 

@@ -45,7 +45,6 @@ namespace NpmTaskRunner.Helpers
         {
             try
             {
-                Telemetry.TrackEvent("Updating bindings");
                 return BindingsPersister.Save(configPath, bindingsXml);
             }
             catch
