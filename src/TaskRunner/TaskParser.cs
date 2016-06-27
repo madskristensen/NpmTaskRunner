@@ -63,7 +63,7 @@ namespace NpmTaskRunner
 
                     var parent = task.Substring(prefix.Length);
 
-                    if (task.StartsWith(prefix) && !list.ContainsKey(parent) && Constants.DEFAULT_TASKS.Contains(parent))
+                    if (!newParents.Contains(parent) && task.StartsWith(prefix) && !list.ContainsKey(parent) && Constants.DEFAULT_TASKS.Contains(parent))
                         newParents.Add(parent);
                 }
 
