@@ -129,8 +129,6 @@ namespace NpmTaskRunner
 
         private static TaskRunnerNode CreateTask(string cwd, string name, string cmd)
         {
-            bool isReserved = Constants.ALWAYS_TASKS.Contains(name, StringComparer.OrdinalIgnoreCase);
-
             return new TaskRunnerNode(name, !string.IsNullOrEmpty(cmd))
             {
                 Command = new TaskRunnerCommand(cwd, "cmd.exe", $"/c {cmd} --color=always"),
