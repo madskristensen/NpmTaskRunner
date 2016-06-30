@@ -28,19 +28,25 @@ namespace NpmTaskRunner
                     {
                         AddTasks(list, child.Name);
                     }
-
-                    // Only fill default tasks if any scripts are found
-                    if (list.Any())
-                    {
-                        foreach (var reserved in Constants.ALWAYS_TASKS)
-                        {
-                            if (!list.ContainsKey(reserved))
-                                list.Add(reserved, $"npm {reserved}");
-                        }
-
-                        AddMissingDefaultParents(list);
-                    }
                 }
+
+                // Only fill default tasks if any scripts are found
+                foreach (var reserved in Constants.ALWAYS_TASKS)
+                {
+                    if (!list.ContainsKey(reserved))
+                        list.Add(reserved, $"npm {reserved}");
+                }
+
+                AddMissingDefaultParents(list);
+
+                bool hasMatch = (from l in list
+                                 from t in Constants.RESTART_SCRIPT_TASKS
+                                 where l.Key == t
+                                 select l).Any();
+
+                // Add "restart" node if RESTART_SCRIPT_TASKS contains anything in list
+                if (hasMatch)
+                    list.Add("restart", "npm restart");
             }
             catch (Exception ex)
             {
@@ -52,7 +58,7 @@ namespace NpmTaskRunner
 
         private static void AddMissingDefaultParents(SortedList<string, string> list)
         {
-            string[] prefixes = { "pre", "post" };
+            string[] prefixes = { Constants.PRE_SCRIPT_PREFIX, Constants.POST_SCRIPT_PREFIX };
             var newParents = new List<string>();
 
             foreach (var task in list.Keys)

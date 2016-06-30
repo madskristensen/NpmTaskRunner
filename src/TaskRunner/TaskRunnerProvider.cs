@@ -60,9 +60,6 @@ namespace NpmTaskRunner
             var scripts = TaskParser.LoadTasks(configPath);
             var hierarchy = GetHierarchy(scripts.Keys);
 
-            if (hierarchy == null)
-                return root;
-
             var defaults = hierarchy.Where(h => Constants.ALL_DEFAULT_TASKS.Contains(h.Key));
 
             TaskRunnerNode defaultTasks = new TaskRunnerNode("Defaults");
@@ -141,7 +138,7 @@ namespace NpmTaskRunner
             if (alltasks == null || !alltasks.Any())
                 return null;
 
-            var events = alltasks.Where(t => t.StartsWith("pre") || t.StartsWith("post"));
+            var events = alltasks.Where(t => t.StartsWith(Constants.PRE_SCRIPT_PREFIX) || t.StartsWith(Constants.POST_SCRIPT_PREFIX));
             var parents = alltasks.Except(events).ToList();
 
             var hierarchy = new SortedList<string, IEnumerable<string>>();
@@ -167,10 +164,10 @@ namespace NpmTaskRunner
 
             foreach (var candidate in candidates)
             {
-                if (candidate.StartsWith("post") && "post" + parent == candidate)
+                if (candidate.StartsWith(Constants.POST_SCRIPT_PREFIX) && Constants.POST_SCRIPT_PREFIX + parent == candidate)
                     yield return candidate;
 
-                if (candidate.StartsWith("pre") && "pre" + parent == candidate)
+                if (candidate.StartsWith(Constants.PRE_SCRIPT_PREFIX) && Constants.PRE_SCRIPT_PREFIX + parent == candidate)
                     yield return candidate;
             }
         }
