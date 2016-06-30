@@ -120,13 +120,13 @@ namespace NpmTaskRunner
             if (list.ContainsKey(child))
                 return;
 
-            if (child.Equals("install", StringComparison.OrdinalIgnoreCase))
-                list.Add("install", "npm install");
+            //if (child.Equals("install", StringComparison.OrdinalIgnoreCase))
+            //    list.Add("install", "npm install");
 
             //else if (child.Equals("uninstall", StringComparison.OrdinalIgnoreCase))
             //    list.Add("uninstall", null);
 
-            else
+            //else
                 list.Add(child, $"npm run {child}");
         }
     }
