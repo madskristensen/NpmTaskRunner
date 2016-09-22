@@ -59,7 +59,6 @@
     <Compile Include="Completion\JsonTreeVisitor.cs" />
     <Compile Include="Completion\BindingsCompletionProvider.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Helpers\Logger.cs" />
     <Compile Include="source.extension.cs">
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Compile>

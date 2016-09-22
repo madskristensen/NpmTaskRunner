@@ -26,7 +26,8 @@ namespace NpmTaskRunner
 
                     foreach (var child in children)
                     {
-                        AddTasks(list, child.Name);
+                        if (!list.ContainsKey(child.Name))
+                            list.Add(child.Name, $"npm run {child.Name}");
                     }
                 }
 
@@ -50,7 +51,7 @@ namespace NpmTaskRunner
             }
             catch (Exception ex)
             {
-                Logger.Log(ex);
+                System.Diagnostics.Debug.Write(ex);
             }
 
             return list;
@@ -78,56 +79,6 @@ namespace NpmTaskRunner
                 string cmd = parent == "version" ? null : $"npm {parent}";
                 list.Add(parent, cmd);
             }
-        }
-
-        public static IDictionary<string, List<string>> LoadDependencies(string configPath)
-        {
-            var dic = new Dictionary<string, List<string>>();
-
-            try
-            {
-                string document = File.ReadAllText(configPath);
-                JObject root = JObject.Parse(document);
-
-                foreach (var dep in _dependencies)
-                {
-                    JToken scripts = root[dep];
-
-                    if (scripts != null)
-                    {
-                        dic[dep] = new List<string>();
-
-                        var children = scripts.Children<JProperty>();
-
-                        foreach (var child in children)
-                        {
-                            dic[dep].Add(child.Name);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex);
-                return null;
-            }
-
-            return dic;
-        }
-
-        private static void AddTasks(SortedList<string, string> list, string child)
-        {
-            if (list.ContainsKey(child))
-                return;
-
-            //if (child.Equals("install", StringComparison.OrdinalIgnoreCase))
-            //    list.Add("install", "npm install");
-
-            //else if (child.Equals("uninstall", StringComparison.OrdinalIgnoreCase))
-            //    list.Add("uninstall", null);
-
-            //else
-                list.Add(child, $"npm run {child}");
         }
     }
 }
