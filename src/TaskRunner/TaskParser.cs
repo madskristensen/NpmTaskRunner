@@ -10,7 +10,7 @@ namespace NpmTaskRunner
     {
         static string[] _dependencies = { "dependencies", "devDependencies", "optionalDependencies" };
 
-        public static SortedList<string, string> LoadTasks(string configPath)
+        public static SortedList<string, string> LoadTasks(string configPath, string cliCommandName)
         {
             var list = new SortedList<string, string>();
 
@@ -27,18 +27,23 @@ namespace NpmTaskRunner
                     foreach (var child in children)
                     {
                         if (!list.ContainsKey(child.Name))
-                            list.Add(child.Name, $"npm run {child.Name}");
+                            list.Add(child.Name, $"{cliCommandName} run {child.Name}");
                     }
                 }
 
+                bool isNpm = (cliCommandName == Constants.NPM_CLI_COMMAND);
+                string[] alwaysTasks = (isNpm
+                    ? Constants.NPM_ALWAYS_TASKS
+                    : Constants.YARN_ALWAYS_TASKS);
+
                 // Only fill default tasks if any scripts are found
-                foreach (var reserved in Constants.ALWAYS_TASKS)
+                foreach (var reserved in alwaysTasks)
                 {
                     if (!list.ContainsKey(reserved))
-                        list.Add(reserved, $"npm {reserved}");
+                        list.Add(reserved, $"{cliCommandName} {reserved}");
                 }
 
-                AddMissingDefaultParents(list);
+                AddMissingDefaultParents(list, cliCommandName);
 
                 bool hasMatch = (from l in list
                                  from t in Constants.RESTART_SCRIPT_TASKS
@@ -47,7 +52,7 @@ namespace NpmTaskRunner
 
                 // Add "restart" node if RESTART_SCRIPT_TASKS contains anything in list
                 if (hasMatch)
-                    list.Add("restart", "npm restart");
+                    list.Add("restart", $"{cliCommandName} restart");
             }
             catch (Exception ex)
             {
@@ -57,7 +62,7 @@ namespace NpmTaskRunner
             return list;
         }
 
-        private static void AddMissingDefaultParents(SortedList<string, string> list)
+        private static void AddMissingDefaultParents(SortedList<string, string> list, string cliCommandName)
         {
             string[] prefixes = { Constants.PRE_SCRIPT_PREFIX, Constants.POST_SCRIPT_PREFIX };
             var newParents = new List<string>();
@@ -76,7 +81,7 @@ namespace NpmTaskRunner
 
             foreach (var parent in newParents)
             {
-                string cmd = parent == "version" ? null : $"npm {parent}";
+                string cmd = parent == "version" ? null : $"{cliCommandName} {parent}";
                 list.Add(parent, cmd);
             }
         }

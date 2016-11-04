@@ -57,41 +57,46 @@ namespace NpmTaskRunner
         {
             ITaskRunnerNode root = new TaskRunnerNode(Vsix.Name);
 
-            var scripts = TaskParser.LoadTasks(configPath);
+            var cliCommandName = GetCliCommandName(configPath);
+            var scripts = TaskParser.LoadTasks(configPath, cliCommandName);
             var hierarchy = GetHierarchy(scripts.Keys);
 
-            var defaults = hierarchy.Where(h => Constants.ALL_DEFAULT_TASKS.Contains(h.Key));
+            bool isNpm = (cliCommandName == Constants.NPM_CLI_COMMAND);
+            IEnumerable<string> allDefaultTasks = (isNpm
+                ? Constants.NPM_ALL_DEFAULT_TASKS
+                : Constants.YARN_ALL_DEFAULT_TASKS);
+            var defaults = hierarchy.Where(h => allDefaultTasks.Contains(h.Key));
 
             TaskRunnerNode defaultTasks = new TaskRunnerNode("Defaults");
-            defaultTasks.Description = "Default predefined npm commands.";
+            defaultTasks.Description = $"Default predefined {cliCommandName} commands.";
             root.Children.Add(defaultTasks);
-            AddCommands(configPath, scripts, defaults, defaultTasks);
+            AddCommands(configPath, scripts, defaults, defaultTasks, isNpm);
 
             if (hierarchy.Count != defaults.Count())
             {
                 var customs = hierarchy.Except(defaults);
 
                 TaskRunnerNode customTasks = new TaskRunnerNode("Custom");
-                customTasks.Description = "Custom npm commands.";
+                customTasks.Description = $"Custom {cliCommandName} commands.";
                 root.Children.Add(customTasks);
 
-                AddCommands(configPath, scripts, customs, customTasks);
+                AddCommands(configPath, scripts, customs, customTasks, isNpm);
             }
 
             return root;
         }
 
-        private void AddCommands(string configPath, SortedList<string, string> scripts, IEnumerable<KeyValuePair<string, IEnumerable<string>>> commands, TaskRunnerNode tasks)
+        private void AddCommands(string configPath, SortedList<string, string> scripts, IEnumerable<KeyValuePair<string, IEnumerable<string>>> commands, TaskRunnerNode tasks, bool isNpm)
         {
             string cwd = Path.GetDirectoryName(configPath);
 
             foreach (var parent in commands)
             {
-                TaskRunnerNode parentTask = CreateTask(cwd, parent.Key, scripts[parent.Key]);
+                TaskRunnerNode parentTask = CreateTask(cwd, parent.Key, scripts[parent.Key], isNpm);
 
                 foreach (var child in parent.Value)
                 {
-                    TaskRunnerNode childTask = CreateTask(cwd, child, scripts[child]);
+                    TaskRunnerNode childTask = CreateTask(cwd, child, scripts[child], isNpm);
                     parentTask.Children.Add(childTask);
                 }
 
@@ -99,11 +104,13 @@ namespace NpmTaskRunner
             }
         }
 
-        private static TaskRunnerNode CreateTask(string cwd, string name, string cmd)
+        private static TaskRunnerNode CreateTask(string cwd, string name, string cmd, bool isNpm)
         {
+            string colorConfig = (isNpm ? "--color=always" : string.Empty);
+
             return new TaskRunnerNode(name, !string.IsNullOrEmpty(cmd))
             {
-                Command = new TaskRunnerCommand(cwd, "cmd.exe", $"/c {cmd} --color=always"),
+                Command = new TaskRunnerCommand(cwd, "cmd.exe", $"/c {cmd} {colorConfig}"),
                 Description = $"Runs the '{name}' command",
             };
         }
@@ -145,6 +152,20 @@ namespace NpmTaskRunner
                 if (candidate.StartsWith(Constants.PRE_SCRIPT_PREFIX) && Constants.PRE_SCRIPT_PREFIX + parent == candidate)
                     yield return candidate;
             }
+        }
+
+        private static string GetCliCommandName(string configPath)
+        {
+            string cwd = Path.GetDirectoryName(configPath);
+
+            string yarnCleanPath = Path.Combine(cwd, ".yarnclean");
+            string yarnLockPath = Path.Combine(cwd, "yarn.lock");
+
+            // if "yarn.lock" or ".yarnclean" file exist at same level as package.json, switch to Yarn CLI
+            if (File.Exists(yarnCleanPath) || File.Exists(yarnLockPath))
+                return Constants.YARN_CLI_COMMAND;
+
+            return Constants.NPM_CLI_COMMAND;
         }
     }
 }
