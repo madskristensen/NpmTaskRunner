@@ -12,6 +12,9 @@ or get the
 Adds support for npm scripts defined in package.json 
 directly in Visual Studio's Task Runner Explorer.
 
+## [Yarn](https://yarnpkg.com/) support
+If either *yarn.lock* or *.yarnclean* exist in the same directory as *package.json*, then the Yarn CLI is being called instead of npm. This requires that you have manually installed [Yarn](https://yarnpkg.com/).
+
 ## npm scripts
 
 Inside package.json it is possible to add custom scripts inside
