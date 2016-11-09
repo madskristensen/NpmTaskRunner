@@ -8,6 +8,7 @@ namespace NpmTaskRunner
         public const string ELEMENT_NAME = "-vs-binding";
         public const string FILENAME = "package.json";
         public const string NPM_CLI_COMMAND = "npm";
+        public const string NPM_VERBOSE_OPTION = "-d";
         public const string POST_SCRIPT_PREFIX = "post";
         public const string PRE_SCRIPT_PREFIX = "pre";
         public const string YARN_CLI_COMMAND = "yarn";

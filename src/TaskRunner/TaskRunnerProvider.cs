@@ -24,7 +24,7 @@ namespace NpmTaskRunner
         private void InitializeNpmTaskRunnerOptions()
         {
             _options = new List<ITaskRunnerOption>();
-            _options.Add(new TaskRunnerOption("Verbose", PackageIds.cmdVerbose, PackageGuids.guidVSPackageCmdSet, false, "-d"));
+            _options.Add(new TaskRunnerOption("Verbose", PackageIds.cmdVerbose, PackageGuids.guidVSPackageCmdSet, false, Constants.NPM_VERBOSE_OPTION));
         }
 
         public List<ITaskRunnerOption> Options
@@ -55,19 +55,20 @@ namespace NpmTaskRunner
 
         private ITaskRunnerNode LoadHierarchy(string configPath)
         {
-            ITaskRunnerNode root = new TaskRunnerNode(Vsix.Name);
-
             var cliCommandName = GetCliCommandName(configPath);
+            bool isNpm = (cliCommandName == Constants.NPM_CLI_COMMAND);
+
+            ITaskRunnerNode root = new TaskNode(Vsix.Name, false, isNpm);
+
             var scripts = TaskParser.LoadTasks(configPath, cliCommandName);
             var hierarchy = GetHierarchy(scripts.Keys);
 
-            bool isNpm = (cliCommandName == Constants.NPM_CLI_COMMAND);
             IEnumerable<string> allDefaultTasks = (isNpm
                 ? Constants.NPM_ALL_DEFAULT_TASKS
                 : Constants.YARN_ALL_DEFAULT_TASKS);
             var defaults = hierarchy.Where(h => allDefaultTasks.Contains(h.Key));
 
-            TaskRunnerNode defaultTasks = new TaskRunnerNode("Defaults");
+            TaskNode defaultTasks = new TaskNode("Defaults", false, isNpm);
             defaultTasks.Description = $"Default predefined {cliCommandName} commands.";
             root.Children.Add(defaultTasks);
             AddCommands(configPath, scripts, defaults, defaultTasks, isNpm);
@@ -76,7 +77,7 @@ namespace NpmTaskRunner
             {
                 var customs = hierarchy.Except(defaults);
 
-                TaskRunnerNode customTasks = new TaskRunnerNode("Custom");
+                TaskNode customTasks = new TaskNode("Custom", false, isNpm);
                 customTasks.Description = $"Custom {cliCommandName} commands.";
                 root.Children.Add(customTasks);
 
@@ -86,17 +87,17 @@ namespace NpmTaskRunner
             return root;
         }
 
-        private void AddCommands(string configPath, SortedList<string, string> scripts, IEnumerable<KeyValuePair<string, IEnumerable<string>>> commands, TaskRunnerNode tasks, bool isNpm)
+        private void AddCommands(string configPath, SortedList<string, string> scripts, IEnumerable<KeyValuePair<string, IEnumerable<string>>> commands, TaskNode tasks, bool isNpm)
         {
             string cwd = Path.GetDirectoryName(configPath);
 
             foreach (var parent in commands)
             {
-                TaskRunnerNode parentTask = CreateTask(cwd, parent.Key, scripts[parent.Key], isNpm);
+                TaskNode parentTask = CreateTask(cwd, parent.Key, scripts[parent.Key], isNpm);
 
                 foreach (var child in parent.Value)
                 {
-                    TaskRunnerNode childTask = CreateTask(cwd, child, scripts[child], isNpm);
+                    TaskNode childTask = CreateTask(cwd, child, scripts[child], isNpm);
                     parentTask.Children.Add(childTask);
                 }
 
@@ -104,14 +105,14 @@ namespace NpmTaskRunner
             }
         }
 
-        private static TaskRunnerNode CreateTask(string cwd, string name, string cmd, bool isNpm)
+        private static TaskNode CreateTask(string cwd, string name, string cmd, bool isNpm)
         {
             string colorConfig = (isNpm ? "--color=always" : string.Empty);
 
-            return new TaskRunnerNode(name, !string.IsNullOrEmpty(cmd))
+            return new TaskNode(name, !string.IsNullOrEmpty(cmd), isNpm)
             {
                 Command = new TaskRunnerCommand(cwd, "cmd.exe", $"/c {cmd} {colorConfig}"),
-                Description = $"Runs the '{name}' command",
+                Description = $"Runs the '{name}' command"
             };
         }
 

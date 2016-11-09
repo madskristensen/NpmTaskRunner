@@ -72,6 +72,7 @@
     <Compile Include="TaskRunner\Helpers\TextViewUtil.cs" />
     <Compile Include="TaskRunner\Helpers\VsTextViewTextUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaskRunner\TaskNode.cs" />
     <Compile Include="TaskRunner\TaskParser.cs" />
     <Compile Include="TaskRunner\TaskRunnerProvider.cs" />
     <Compile Include="VSCommandTable.cs">
