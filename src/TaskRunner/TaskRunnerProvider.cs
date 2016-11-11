@@ -16,11 +16,6 @@ namespace NpmTaskRunner
         private ImageSource _icon;
         private List<ITaskRunnerOption> _options = null;
 
-        public TaskRunnerProvider()
-        {
-            _icon = new BitmapImage(new Uri(@"pack://application:,,,/NpmTaskRunner;component/Resources/npm.png"));
-        }
-
         private void InitializeNpmTaskRunnerOptions()
         {
             _options = new List<ITaskRunnerOption>();
@@ -56,6 +51,7 @@ namespace NpmTaskRunner
         private ITaskRunnerNode LoadHierarchy(string configPath)
         {
             var cliCommandName = GetCliCommandName(configPath);
+            SetRootNodeIcon(cliCommandName);
             bool isNpm = (cliCommandName == Constants.NPM_CLI_COMMAND);
 
             ITaskRunnerNode root = new TaskNode(Vsix.Name, false, isNpm);
@@ -168,5 +164,8 @@ namespace NpmTaskRunner
 
             return Constants.NPM_CLI_COMMAND;
         }
+
+        private void SetRootNodeIcon(string cliCommandName) =>
+            _icon = new BitmapImage(new Uri($@"pack://application:,,,/NpmTaskRunner;component/Resources/{cliCommandName}.png"));
     }
 }

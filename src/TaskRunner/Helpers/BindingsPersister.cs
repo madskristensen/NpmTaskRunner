@@ -9,7 +9,7 @@ namespace NpmTaskRunner.Helpers
 {
     public static class BindingsPersister
     {
-        private const string BindingsName = Constants.ELEMENT_NAME;
+        private const string BindingsName = "-vs-binding";
 
         public static string Load(string configPath)
         {

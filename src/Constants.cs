@@ -5,7 +5,6 @@ namespace NpmTaskRunner
 {
     class Constants
     {
-        public const string ELEMENT_NAME = "-vs-binding";
         public const string FILENAME = "package.json";
         public const string NPM_CLI_COMMAND = "npm";
         public const string NPM_VERBOSE_OPTION = "-d";
