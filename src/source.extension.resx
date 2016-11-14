@@ -121,7 +121,7 @@
     <value>NPM Task Runner</value>
   </data>
   <data name="112" xml:space="preserve">
-    <value>Adds support for npm scripts defined in package.json directly in Visual Studio's Task Runner Explorer</value>
+    <value>Adds support for npm scripts defined in package.json directly in Visual Studio's Task Runner Explorer. Includes full support for Yarn</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="400" type="System.Resources.ResXFileRef, System.Windows.Forms">
