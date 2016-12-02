@@ -11,6 +11,7 @@ namespace NpmTaskRunner
         public const string POST_SCRIPT_PREFIX = "post";
         public const string PRE_SCRIPT_PREFIX = "pre";
         public const string YARN_CLI_COMMAND = "yarn";
+        public const string YARN_VERBOSE_OPTION = "--verbose";
 
         public static readonly string[] NPM_ALWAYS_TASKS = { "install", "update" };
         public static readonly string[] YARN_ALWAYS_TASKS = { "install", "upgrade" };
