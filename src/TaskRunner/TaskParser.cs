@@ -65,7 +65,7 @@ namespace NpmTaskRunner
 
         private static void AddMissingDefaultParents(SortedList<string, string> list, string cliCommandName, bool isNpm)
         {
-            string[] DEFAULT_TASKS = (isNpm
+            string[] defaultTasks = (isNpm
                 ? Constants.NPM_DEFAULT_TASKS
                 : Constants.YARN_DEFAULT_TASKS);
             string[] prefixes = { Constants.PRE_SCRIPT_PREFIX, Constants.POST_SCRIPT_PREFIX };
@@ -79,7 +79,7 @@ namespace NpmTaskRunner
 
                     var parent = task.Substring(prefix.Length);
 
-                    if (!newParents.Contains(parent) && task.StartsWith(prefix) && !list.ContainsKey(parent) && DEFAULT_TASKS.Contains(parent))
+                    if (!newParents.Contains(parent) && task.StartsWith(prefix) && !list.ContainsKey(parent) && defaultTasks.Contains(parent))
                         newParents.Add(parent);
                 }
 
