@@ -8,8 +8,6 @@ namespace NpmTaskRunner
 {
     class TaskParser
     {
-        static string[] _dependencies = { "dependencies", "devDependencies", "optionalDependencies" };
-
         public static SortedList<string, string> LoadTasks(string configPath, string cliCommandName)
         {
             var list = new SortedList<string, string>();
