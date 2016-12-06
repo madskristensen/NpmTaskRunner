@@ -43,16 +43,19 @@ namespace NpmTaskRunner
                         list.Add(reserved, $"{cliCommandName} {reserved}");
                 }
 
-                AddMissingDefaultParents(list, cliCommandName);
+                AddMissingDefaultParents(list, cliCommandName, isNpm);
 
-                bool hasMatch = (from l in list
-                                 from t in Constants.RESTART_SCRIPT_TASKS
-                                 where l.Key == t
-                                 select l).Any();
+                if (isNpm)
+                {
+                    bool hasMatch = (from l in list
+                                     from t in Constants.RESTART_SCRIPT_TASKS
+                                     where l.Key == t
+                                     select l).Any();
 
-                // Add "restart" node if RESTART_SCRIPT_TASKS contains anything in list
-                if (hasMatch)
-                    list.Add("restart", $"{cliCommandName} restart");
+                    // Add "restart" node if RESTART_SCRIPT_TASKS contains anything in list
+                    if (hasMatch)
+                        list.Add("restart", $"{cliCommandName} restart");
+                }
             }
             catch (Exception ex)
             {
@@ -62,8 +65,11 @@ namespace NpmTaskRunner
             return list;
         }
 
-        private static void AddMissingDefaultParents(SortedList<string, string> list, string cliCommandName)
+        private static void AddMissingDefaultParents(SortedList<string, string> list, string cliCommandName, bool isNpm)
         {
+            string[] DEFAULT_TASKS = (isNpm
+                ? Constants.NPM_DEFAULT_TASKS
+                : Constants.YARN_DEFAULT_TASKS);
             string[] prefixes = { Constants.PRE_SCRIPT_PREFIX, Constants.POST_SCRIPT_PREFIX };
             var newParents = new List<string>();
 
@@ -75,7 +81,7 @@ namespace NpmTaskRunner
 
                     var parent = task.Substring(prefix.Length);
 
-                    if (!newParents.Contains(parent) && task.StartsWith(prefix) && !list.ContainsKey(parent) && Constants.DEFAULT_TASKS.Contains(parent))
+                    if (!newParents.Contains(parent) && task.StartsWith(prefix) && !list.ContainsKey(parent) && DEFAULT_TASKS.Contains(parent))
                         newParents.Add(parent);
                 }
 
