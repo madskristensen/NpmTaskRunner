@@ -13,7 +13,7 @@ Adds support for npm scripts defined in package.json
 directly in Visual Studio's Task Runner Explorer.
 
 ## [Yarn](https://yarnpkg.com/) support
-If a *yarn.lock*, *.yarnclean*, or *.yarnrc* file exists in the same directory as *package.json*, then the Yarn CLI is being called instead of npm. This requires that you have manually installed [Yarn](https://yarnpkg.com/).
+If a *yarn.lock*, *.yarnclean*, or *.yarnrc* file exists in the same directory as *package.json*, then the Yarn CLI is being called instead of npm. This requires that you have manually installed [Yarn](https://yarnpkg.com/). A minimum Yarn version of [v0.22.0](https://github.com/yarnpkg/yarn/releases/tag/v0.22.0) is recommended for the best results.
 
 ## npm scripts
 
