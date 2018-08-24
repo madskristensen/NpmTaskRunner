@@ -8,7 +8,7 @@ namespace NpmTaskRunner
     [InstalledProductRegistration("#110", "#112", Vsix.Version, IconResourceID = 400)]
     [Guid(PackageGuids.guidVSPackageString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    public sealed class VSPackage : Package
+    public sealed class VSPackage : AsyncPackage
     {
     }
 }
