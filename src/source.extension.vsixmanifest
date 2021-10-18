@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="d7f89ba3-815c-4feb-89b9-68d1654e2138" Version="1.4" Language="en-US" Publisher="Mads Kristensen" />
+        <Identity Id="c5203f5f-4785-4c09-b383-688a100a9f5d" Version="1.5" Language="en-US" Publisher="Mads Kristensen" />
         <DisplayName>NPM Task Runner</DisplayName>
         <Description xml:space="preserve">Adds support for npm scripts defined in package.json directly in Visual Studio's Task Runner Explorer. Includes full support for Yarn</Description>
         <MoreInfo>https://github.com/madskristensen/NpmTaskRunner</MoreInfo>
@@ -11,11 +11,13 @@
         <Tags>npm, package.json, task runner, scripts, yarn</Tags>
     </Metadata>
     <Installation>
-        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,17.0)" />
+      <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">
+        <ProductArchitecture>amd64</ProductArchitecture>
+      </InstallationTarget>
     </Installation>
     <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />
-        <Prerequisite Id="Microsoft.VisualStudio.Component.Web" Version="[15.0,)" DisplayName="Web development tools" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,)" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.Web" Version="[17.0,)" DisplayName="Web development tools" />
     </Prerequisites>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
