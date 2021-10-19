@@ -1,26 +1,28 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Microsoft.VisualStudio.TaskRunnerExplorer;
 
 namespace NpmTaskRunner.Helpers
 {
     public class TaskRunnerConfig : TaskRunnerConfigBase
     {
-        private ImageSource _rootNodeIcon;
+        private string _cliCommandName;
 
         public TaskRunnerConfig(ITaskRunnerCommandContext context, ITaskRunnerNode hierarchy)
             : base(context, hierarchy)
         {
         }
 
-        public TaskRunnerConfig(ITaskRunnerCommandContext context, ITaskRunnerNode hierarchy, ImageSource rootNodeIcon)
+        public TaskRunnerConfig(ITaskRunnerCommandContext context, ITaskRunnerNode hierarchy, string cliCommandName)
             : this(context, hierarchy)
         {
-            _rootNodeIcon = rootNodeIcon;
+            _cliCommandName = cliCommandName;
         }
 
         protected override ImageSource LoadRootNodeIcon()
         {
-            return _rootNodeIcon;
+            return new BitmapImage(new Uri($@"pack://application:,,,/NpmTaskRunner;component/Resources/{_cliCommandName}.png")); ;
         }
     }
 }
