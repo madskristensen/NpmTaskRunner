@@ -166,14 +166,19 @@ namespace NpmTaskRunner
         {
             var cwd = Path.GetDirectoryName(configPath);
 
-            var yarnCleanPath = Path.Combine(cwd, ".yarnclean");
-            var yarnConfigPath = Path.Combine(cwd, ".yarnrc");
-            var yarnLockPath = Path.Combine(cwd, "yarn.lock");
-
-            // if "yarn.lock", ".yarnrc", or ".yarnclean" file exists at same level as package.json, switch to Yarn CLI
-            if (File.Exists(yarnCleanPath) || File.Exists(yarnConfigPath) || File.Exists(yarnLockPath))
+            while (cwd != null)
             {
-                return Constants.YARN_CLI_COMMAND;
+                var yarnCleanPath = Path.Combine(cwd, ".yarnclean");
+                var yarnConfigPath = Path.Combine(cwd, ".yarnrc");
+                var yarnLockPath = Path.Combine(cwd, "yarn.lock");
+
+                // if "yarn.lock", ".yarnrc", or ".yarnclean" file exists at same level as package.json, switch to Yarn CLI
+                if (File.Exists(yarnCleanPath) || File.Exists(yarnConfigPath) || File.Exists(yarnLockPath))
+                {
+                    return Constants.YARN_CLI_COMMAND;
+                }
+
+                cwd = Path.GetDirectoryName(cwd);
             }
 
             return Constants.NPM_CLI_COMMAND;
