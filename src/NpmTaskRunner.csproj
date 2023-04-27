@@ -65,6 +65,7 @@
     <Compile Include="TaskRunner\Helpers\ITextUtil.cs" />
     <Compile Include="TaskRunner\Helpers\LineRange.cs" />
     <Compile Include="TaskRunner\Helpers\BindingsPersister.cs" />
+    <Compile Include="TaskRunner\Helpers\PackageManager.cs" />
     <Compile Include="TaskRunner\Helpers\Range.cs" />
     <Compile Include="TaskRunner\Helpers\TaskRunnerConfig.cs" />
     <Compile Include="TaskRunner\Helpers\TaskRunnerConfigBase.cs" />
@@ -91,6 +92,8 @@
     <Content Include="Resources\icon.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="Resources\pnpm-dark.png" />
+    <Resource Include="Resources\pnpm.png" />
     <Content Include="Resources\preview.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

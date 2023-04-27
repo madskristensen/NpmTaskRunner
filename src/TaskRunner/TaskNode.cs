@@ -1,22 +1,25 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TaskRunnerExplorer;
+using NpmTaskRunner.Helpers;
 
 namespace NpmTaskRunner
 {
     public class TaskNode : TaskRunnerNode
     {
-        private bool _isNpm;
+        private readonly PackageManager _packageManager;
 
-        public TaskNode(string name, bool invokable, bool isNpm) : base(name, invokable)
+        public TaskNode(string name, bool invokable, PackageManager packageManager) : base(name, invokable)
         {
-            _isNpm = isNpm;
+            _packageManager = packageManager;
         }
 
         public override Task<ITaskRunnerCommandResult> Invoke(ITaskRunnerCommandContext context)
         {
-            // if the CLI is Yarn and the Verbose option is enabled, set the verbose option correctly
-            if (!_isNpm && this.Command.Options?.Trim() == Constants.NPM_VERBOSE_OPTION)
-                this.Command.Options = this.Command.Options.Replace(Constants.NPM_VERBOSE_OPTION, Constants.YARN_VERBOSE_OPTION).Trim();
+            // if the CLI is not NPM and the Verbose option is enabled, set the verbose option correctly
+            if (_packageManager != PackageManager.NPM && this.Command.Options?.Trim() == PackageManager.NPM.VerboseOption)
+            {
+                this.Command.Options = this.Command.Options.Replace(PackageManager.NPM.VerboseOption, _packageManager.VerboseOption).Trim();
+            }
 
             return base.Invoke(context);
         }
