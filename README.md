@@ -13,7 +13,9 @@ Adds support for npm scripts defined in package.json
 directly in Visual Studio's Task Runner Explorer.
 
 ## [Yarn](https://yarnpkg.com/) support
-If a *yarn.lock*, *.yarnclean*, or *.yarnrc* file exists in the
+If `packageManager` is set in *package.json* when using
+[corepack](https://nodejs.org/api/corepack.html#corepack) or
+a *yarn.lock*, *.yarnclean*, or *.yarnrc* file exists in the
 same directory as *package.json*, then the Yarn CLI will be
 called instead of npm. This requires that you have manually
 installed [Yarn](https://yarnpkg.com/). A minimum Yarn version
@@ -21,7 +23,9 @@ of [v0.22.0](https://github.com/yarnpkg/yarn/releases/tag/v0.22.0)
 is recommended for the best results.
 
 ## [PNPM](https://pnpm.io/) support
-If a *pnpm-lock.yaml*, *pnpm-workspace.yaml*, or *.pnpmfile.cjs*
+If `packageManager` is set in *package.json* when using
+[corepack](https://nodejs.org/api/corepack.html#corepack) or
+a *pnpm-lock.yaml*, *pnpm-workspace.yaml*, or *.pnpmfile.cjs*
 file exists in the same directory as *package.json*, then the
 PNPM CLI will be called instead of npm. This requires that you
 have manually installed [PNPM](https://pnpm.io/installation).

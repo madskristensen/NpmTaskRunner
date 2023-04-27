@@ -50,7 +50,7 @@ namespace NpmTaskRunner
 
         private ITaskRunnerNode LoadHierarchy(string configPath)
         {
-            var packageManager = PackageManager.DetectByPath(configPath);
+            var packageManager = PackageManager.FromManifestFile(configPath);
             _cliCommandName = packageManager.CliCommandName;
 
             ITaskRunnerNode root = new TaskNode(Vsix.Name, false, packageManager);

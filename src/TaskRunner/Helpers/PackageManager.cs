@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace NpmTaskRunner.Helpers
 {
@@ -33,6 +35,8 @@ namespace NpmTaskRunner.Helpers
             DefaultTasks = new[] { "test", "start", "version" },
         };
 
+        private PackageManager() { }
+
         public string CliCommandName { get; private set; }
         public string VerboseOption { get; private set; }
         public string ColorOption { get; private set; }
@@ -55,30 +59,20 @@ namespace NpmTaskRunner.Helpers
             return this.CliCommandName;
         }
 
-        public static PackageManager DetectByPath(string configPath)
+        public static PackageManager FromManifestFile(string manifestFilePath)
         {
-            var cwd = Path.GetDirectoryName(configPath);
+            var cwd = Path.GetDirectoryName(manifestFilePath);
 
             while (cwd != null)
             {
-                var yarnCleanPath = Path.Combine(cwd, ".yarnclean");
-                var yarnConfigPath = Path.Combine(cwd, ".yarnrc");
-                var yarnLockPath = Path.Combine(cwd, "yarn.lock");
-
-                // if "yarn.lock", ".yarnrc", or ".yarnclean" file exists at same level as package.json, switch to Yarn CLI
-                if (File.Exists(yarnCleanPath) || File.Exists(yarnConfigPath) || File.Exists(yarnLockPath))
+                if (TryGetByPackageManagerSpecificFiles(cwd, out var packageManager))
                 {
-                    return Yarn;
+                    return packageManager;
                 }
 
-                var pnpmPath = Path.Combine(cwd, ".pnpmfile.cjs");
-                var pnpmWorkspacePath = Path.Combine(cwd, "pnpm-workspace.yaml");
-                var pnpmLockPath = Path.Combine(cwd, "pnpm-lock.yaml");
-
-                // if ".pnpmfile.cjs", "pnpm-workspace.yaml", or "pnpm-lock.yaml" file exists at same level as package.json, switch to PNPM CLI
-                if (File.Exists(pnpmPath) || File.Exists(pnpmWorkspacePath) || File.Exists(pnpmLockPath))
+                if (TryGetByCorepackPackageManager(cwd, out packageManager))
                 {
-                    return PNPM;
+                    return packageManager;
                 }
 
                 cwd = Path.GetDirectoryName(cwd);
@@ -86,5 +80,97 @@ namespace NpmTaskRunner.Helpers
 
             return NPM;
         }
+
+        /// <summary>
+        /// Attempts to detect the package manager by looking for sibling files that are specific to a package manager.
+        /// </summary>
+        private static bool TryGetByPackageManagerSpecificFiles(string directoryPath, out PackageManager packageManager)
+        {
+            try
+            {
+                var yarnCleanPath = Path.Combine(directoryPath, ".yarnclean");
+                var yarnConfigPath = Path.Combine(directoryPath, ".yarnrc");
+                var yarnLockPath = Path.Combine(directoryPath, "yarn.lock");
+
+                // if "yarn.lock", ".yarnrc", or ".yarnclean" file exists at same level as package.json, switch to Yarn CLI
+                if (File.Exists(yarnCleanPath) || File.Exists(yarnConfigPath) || File.Exists(yarnLockPath))
+                {
+                    packageManager = Yarn;
+                    return true;
+                }
+
+                var pnpmPath = Path.Combine(directoryPath, ".pnpmfile.cjs");
+                var pnpmWorkspacePath = Path.Combine(directoryPath, "pnpm-workspace.yaml");
+                var pnpmLockPath = Path.Combine(directoryPath, "pnpm-lock.yaml");
+
+                // if ".pnpmfile.cjs", "pnpm-workspace.yaml", or "pnpm-lock.yaml" file exists at same level as package.json, switch to PNPM CLI
+                if (File.Exists(pnpmPath) || File.Exists(pnpmWorkspacePath) || File.Exists(pnpmLockPath))
+                {
+                    packageManager = PNPM;
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.Write(ex);
+            }
+
+            packageManager = null;
+            return false;
+        }
+
+        /// <summary>
+        /// When using corepack, the "packageManager" property will be set in the package.json file.
+        /// See: https://nodejs.org/api/corepack.html#configuring-a-package
+        /// </summary>
+        private static bool TryGetByCorepackPackageManager(string directoryPath, out PackageManager packageManager)
+        {
+            try
+            {
+                var manifestFilePath = Path.Combine(directoryPath, Constants.FILENAME);
+                if (!File.Exists(manifestFilePath))
+                {
+                    packageManager = null;
+                    return false;
+                }
+
+                var json = File.ReadAllText(manifestFilePath);
+                var parsed = JObject.Parse(json);
+                var packageManagerProperty = parsed["packageManager"]?.Value<string>();
+                if (string.IsNullOrWhiteSpace(packageManagerProperty))
+                {
+                    packageManager = null;
+                    return false;
+                }
+
+                var packageManagerName = packageManagerProperty.Split('@').First();
+
+                if (string.Equals(packageManagerName, NPM.CliCommandName, StringComparison.OrdinalIgnoreCase))
+                {
+                    packageManager = NPM;
+                    return true;
+                }
+
+                if (string.Equals(packageManagerName, Yarn.CliCommandName, StringComparison.OrdinalIgnoreCase))
+                {
+                    packageManager = Yarn;
+                    return true;
+                }
+
+                if (string.Equals(packageManagerName, PNPM.CliCommandName, StringComparison.OrdinalIgnoreCase))
+                {
+                    packageManager = PNPM;
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.Write(ex);
+            }
+
+            packageManager = null;
+            return false;
+        }
+
     }
 }
