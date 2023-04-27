@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using NpmTaskRunner.Helpers;
 
 namespace NpmTaskRunner
 {
     class TaskParser
     {
-        public static SortedList<string, string> LoadTasks(string configPath, string cliCommandName)
+        public static SortedList<string, string> LoadTasks(string configPath, PackageManager packageManager)
         {
             var list = new SortedList<string, string>();
 
@@ -25,25 +26,22 @@ namespace NpmTaskRunner
                     foreach (var child in children)
                     {
                         if (!list.ContainsKey(child.Name))
-                            list.Add(child.Name, $"{cliCommandName} run {child.Name}");
+                            list.Add(child.Name, $"{packageManager.CliCommandName} run {child.Name}");
                     }
                 }
 
-                bool isNpm = (cliCommandName == Constants.NPM_CLI_COMMAND);
-                string[] alwaysTasks = (isNpm
-                    ? Constants.NPM_ALWAYS_TASKS
-                    : Constants.YARN_ALWAYS_TASKS);
+                string[] alwaysTasks = packageManager.AlwaysTasks;
 
                 // Only fill default tasks if any scripts are found
                 foreach (var reserved in alwaysTasks)
                 {
                     if (!list.ContainsKey(reserved))
-                        list.Add(reserved, $"{cliCommandName} {reserved}");
+                        list.Add(reserved, $"{packageManager.CliCommandName} {reserved}");
                 }
 
-                AddMissingDefaultParents(list, cliCommandName, isNpm);
+                AddMissingDefaultParents(list, packageManager);
 
-                if (isNpm)
+                if (packageManager == PackageManager.NPM)
                 {
                     bool hasMatch = (from l in list
                                      from t in Constants.RESTART_SCRIPT_TASKS
@@ -52,7 +50,7 @@ namespace NpmTaskRunner
 
                     // Add "restart" node if RESTART_SCRIPT_TASKS contains anything in list
                     if (hasMatch)
-                        list.Add("restart", $"{cliCommandName} restart");
+                        list.Add("restart", $"{packageManager.CliCommandName} restart");
                 }
             }
             catch (Exception ex)
@@ -63,11 +61,8 @@ namespace NpmTaskRunner
             return list;
         }
 
-        private static void AddMissingDefaultParents(SortedList<string, string> list, string cliCommandName, bool isNpm)
+        private static void AddMissingDefaultParents(SortedList<string, string> list, PackageManager packageManager)
         {
-            string[] defaultTasks = (isNpm
-                ? Constants.NPM_DEFAULT_TASKS
-                : Constants.YARN_DEFAULT_TASKS);
             string[] prefixes = { Constants.PRE_SCRIPT_PREFIX, Constants.POST_SCRIPT_PREFIX };
             var newParents = new List<string>();
 
@@ -79,13 +74,13 @@ namespace NpmTaskRunner
 
                     var parent = task.Substring(prefix.Length);
 
-                    if (!newParents.Contains(parent) && task.StartsWith(prefix) && !list.ContainsKey(parent) && defaultTasks.Contains(parent))
+                    if (!newParents.Contains(parent) && task.StartsWith(prefix) && !list.ContainsKey(parent) && packageManager.DefaultTasks.Contains(parent))
                         newParents.Add(parent);
                 }
 
             foreach (var parent in newParents)
             {
-                string cmd = parent == "version" ? null : $"{cliCommandName} {parent}";
+                string cmd = parent == "version" ? null : $"{packageManager.CliCommandName} {parent}";
                 list.Add(parent, cmd);
             }
         }

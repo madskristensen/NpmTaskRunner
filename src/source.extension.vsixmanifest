@@ -3,17 +3,17 @@
     <Metadata>
         <Identity Id="c5203f5f-4785-4c09-b383-688a100a9f5d" Version="1.5" Language="en-US" Publisher="Mads Kristensen" />
         <DisplayName>NPM Task Runner</DisplayName>
-        <Description xml:space="preserve">Adds support for npm scripts defined in package.json directly in Visual Studio's Task Runner Explorer. Includes full support for Yarn</Description>
+        <Description xml:space="preserve">Adds support for npm scripts defined in package.json directly in Visual Studio's Task Runner Explorer. Includes full support for Yarn and PNPM</Description>
         <MoreInfo>https://github.com/madskristensen/NpmTaskRunner</MoreInfo>
         <License>Resources\LICENSE</License>
         <Icon>Resources\icon.png</Icon>
         <PreviewImage>Resources\preview.png</PreviewImage>
-        <Tags>npm, package.json, task runner, scripts, yarn</Tags>
+        <Tags>npm, package.json, task runner, scripts, yarn, pnpm</Tags>
     </Metadata>
     <Installation>
-      <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">
-        <ProductArchitecture>amd64</ProductArchitecture>
-      </InstallationTarget>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
     </Installation>
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,)" DisplayName="Visual Studio core editor" />

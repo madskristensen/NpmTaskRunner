@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Microsoft.VisualStudio.TaskRunnerExplorer;
 using NpmTaskRunner.Helpers;
 
@@ -21,7 +19,7 @@ namespace NpmTaskRunner
         {
             _options = new List<ITaskRunnerOption>
             {
-                new TaskRunnerOption("Verbose", PackageIds.cmdVerbose, PackageGuids.guidVSPackageCmdSet, false, Constants.NPM_VERBOSE_OPTION)
+                new TaskRunnerOption("Verbose", PackageIds.cmdVerbose, PackageGuids.guidVSPackageCmdSet, false, PackageManager.NPM.VerboseOption)
             };
         }
 
@@ -52,53 +50,50 @@ namespace NpmTaskRunner
 
         private ITaskRunnerNode LoadHierarchy(string configPath)
         {
-            _cliCommandName = GetCliCommandName(configPath);
-            var isNpm = (_cliCommandName == Constants.NPM_CLI_COMMAND);
+            var packageManager = PackageManager.DetectByPath(configPath);
+            _cliCommandName = packageManager.CliCommandName;
 
-            ITaskRunnerNode root = new TaskNode(Vsix.Name, false, isNpm);
+            ITaskRunnerNode root = new TaskNode(Vsix.Name, false, packageManager);
 
-            SortedList<string, string> scripts = TaskParser.LoadTasks(configPath, _cliCommandName);
+            SortedList<string, string> scripts = TaskParser.LoadTasks(configPath, packageManager);
             SortedList<string, IEnumerable<string>> hierarchy = GetHierarchy(scripts.Keys);
 
-            IEnumerable<string> allDefaultTasks = (isNpm
-                ? Constants.NPM_ALL_DEFAULT_TASKS
-                : Constants.YARN_ALL_DEFAULT_TASKS);
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> defaults = hierarchy.Where(h => allDefaultTasks.Contains(h.Key));
+            IEnumerable<KeyValuePair<string, IEnumerable<string>>> defaults = hierarchy.Where(h => packageManager.AllDefaultTasks.Contains(h.Key));
 
-            var defaultTasks = new TaskNode("Defaults", false, isNpm)
+            var defaultTasks = new TaskNode("Defaults", false, packageManager)
             {
                 Description = $"Default predefined {_cliCommandName} commands."
             };
             root.Children.Add(defaultTasks);
-            AddCommands(configPath, scripts, defaults, defaultTasks, isNpm);
+            AddCommands(configPath, scripts, defaults, defaultTasks, packageManager);
 
             if (hierarchy.Count != defaults.Count())
             {
                 IEnumerable<KeyValuePair<string, IEnumerable<string>>> customs = hierarchy.Except(defaults);
 
-                var customTasks = new TaskNode("Custom", false, isNpm)
+                var customTasks = new TaskNode("Custom", false, packageManager)
                 {
                     Description = $"Custom {_cliCommandName} commands."
                 };
                 root.Children.Add(customTasks);
 
-                AddCommands(configPath, scripts, customs, customTasks, isNpm);
+                AddCommands(configPath, scripts, customs, customTasks, packageManager);
             }
 
             return root;
         }
 
-        private void AddCommands(string configPath, SortedList<string, string> scripts, IEnumerable<KeyValuePair<string, IEnumerable<string>>> commands, TaskNode tasks, bool isNpm)
+        private void AddCommands(string configPath, SortedList<string, string> scripts, IEnumerable<KeyValuePair<string, IEnumerable<string>>> commands, TaskNode tasks, PackageManager packageManager)
         {
             var cwd = Path.GetDirectoryName(configPath);
 
             foreach (KeyValuePair<string, IEnumerable<string>> parent in commands)
             {
-                TaskNode parentTask = CreateTask(cwd, parent.Key, scripts[parent.Key], isNpm);
+                TaskNode parentTask = CreateTask(cwd, parent.Key, scripts[parent.Key], packageManager);
 
                 foreach (var child in parent.Value)
                 {
-                    TaskNode childTask = CreateTask(cwd, child, scripts[child], isNpm);
+                    TaskNode childTask = CreateTask(cwd, child, scripts[child], packageManager);
                     parentTask.Children.Add(childTask);
                 }
 
@@ -106,13 +101,11 @@ namespace NpmTaskRunner
             }
         }
 
-        private static TaskNode CreateTask(string cwd, string name, string cmd, bool isNpm)
+        private static TaskNode CreateTask(string cwd, string name, string cmd, PackageManager packageManager)
         {
-            var colorConfig = (isNpm ? "--color=always" : string.Empty);
-
-            return new TaskNode(name, !string.IsNullOrEmpty(cmd), isNpm)
+            return new TaskNode(name, !string.IsNullOrEmpty(cmd), packageManager)
             {
-                Command = new TaskRunnerCommand(cwd, "cmd.exe", $"/c {cmd} {colorConfig}"),
+                Command = new TaskRunnerCommand(cwd, "cmd.exe", $"/c {cmd} {packageManager.ColorOption}"),
                 Description = $"Runs the '{name}' command"
             };
         }
@@ -160,28 +153,6 @@ namespace NpmTaskRunner
                     yield return candidate;
                 }
             }
-        }
-
-        private static string GetCliCommandName(string configPath)
-        {
-            var cwd = Path.GetDirectoryName(configPath);
-
-            while (cwd != null)
-            {
-                var yarnCleanPath = Path.Combine(cwd, ".yarnclean");
-                var yarnConfigPath = Path.Combine(cwd, ".yarnrc");
-                var yarnLockPath = Path.Combine(cwd, "yarn.lock");
-
-                // if "yarn.lock", ".yarnrc", or ".yarnclean" file exists at same level as package.json, switch to Yarn CLI
-                if (File.Exists(yarnCleanPath) || File.Exists(yarnConfigPath) || File.Exists(yarnLockPath))
-                {
-                    return Constants.YARN_CLI_COMMAND;
-                }
-
-                cwd = Path.GetDirectoryName(cwd);
-            }
-
-            return Constants.NPM_CLI_COMMAND;
         }
     }
 }
