@@ -30,7 +30,7 @@ namespace NpmTaskRunner.Helpers
         {
             CliCommandName = "pnpm",
             VerboseOption = "--long",
-            ColorOption = string.Empty,
+            ColorOption = "--color",
             AlwaysTasks = new[] { "install", "update" },
             DefaultTasks = new[] { "test", "start", "version" },
         };
